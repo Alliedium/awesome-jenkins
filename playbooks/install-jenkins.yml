@@ -1,0 +1,16 @@
+- hosts: localhost
+  become: true
+
+  vars:
+    jenkins_hostname: 127.0.0.1
+    java_packages:
+      - openjdk-17-jdk
+
+  tasks:
+  - name: check java
+    include_role:
+      name: geerlingguy.java
+
+  - name: check jenkins
+    include_role:
+      name: geerlingguy.jenkins
