@@ -1,0 +1,13 @@
+- hosts: localhost
+  become: true
+
+  vars:
+    jenkins_hostname: 127.0.0.1
+    jenkins_port: 8081
+    java_packages:
+      - openjdk-17-jdk
+
+  pre_tasks:
+    - include_vars: plugins.yml
+  roles:
+    - {role: geerlingguy.jenkins, jenkins_plugins: "{{ plugins }}"}
