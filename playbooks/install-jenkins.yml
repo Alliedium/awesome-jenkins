@@ -14,3 +14,4 @@
   - name: check jenkins
     include_role:
       name: geerlingguy.jenkins
+  - include_tasks: ../tasks/main.yml
