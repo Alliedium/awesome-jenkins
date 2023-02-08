@@ -1,0 +1,36 @@
+- hosts: localhost
+  become: true
+
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.10
+    jenkins_hostname: 127.0.0.1
+    jenkins_port: 8081
+    java_packages:
+      - openjdk-17-jdk
+    jenkins_job_config: "{{ lookup('file', 'templates/new_job_config.xml') }}"
+    jenkins_yml_job_config: "{{ lookup('file', 'templates/job_freestyle.yml') }}"
+
+  pre_tasks:
+    - include_vars: plugins.yml
+
+  roles:
+    - {role: geerlingguy.jenkins, jenkins_plugins: "{{ plugins }}"}
+
+  tasks:
+    - name: Obtaining a list of plugins
+      community.general.jenkins_script:
+        script: 'println(Jenkins.instance.pluginManager.plugins)'
+        user: admin
+        password: admin
+        url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
+        validate_certs: false
+    - name: Create jenkins job using basic authentication
+      community.general.jenkins_job:
+        config: "{{ jenkins_job_config }}"
+        name: test_job
+        user: admin
+        password: admin
+#        token: 1150518ddf064910afaed37f47716da023
+        url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
+
