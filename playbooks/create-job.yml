@@ -10,6 +10,7 @@
       - openjdk-17-jdk
     jenkins_job_config: "{{ lookup('file', 'templates/new_job_config.xml') }}"
     jenkins_yml_job_config: "{{ lookup('file', 'templates/job_freestyle.yml') }}"
+    jenkins_multibranch_job_config: "{{ lookup('file', 'templates/multibranch_pipeline_config.xml') }}"
 
   pre_tasks:
     - include_vars: plugins.yml
@@ -17,6 +18,8 @@
   roles:
     - {role: geerlingguy.jenkins, jenkins_plugins: "{{ plugins }}"}
 
+# jdk settings are at /var/lib/jenkins/config.xml
+#  maven settings hudson.tasks.Maven.xml
   tasks:
     - name: Obtaining a list of plugins
       community.general.jenkins_script:
@@ -27,8 +30,8 @@
         validate_certs: false
     - name: Create jenkins job using basic authentication
       community.general.jenkins_job:
-        config: "{{ jenkins_job_config }}"
-        name: test_job
+        config: "{{ jenkins_multibranch_job_config }}"
+        name: mpipeline_job_strategy_new
         user: admin
         password: admin
 #        token: 1150518ddf064910afaed37f47716da023
