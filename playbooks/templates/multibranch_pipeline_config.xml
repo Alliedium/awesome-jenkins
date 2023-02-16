@@ -2,7 +2,7 @@
 <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.21">
     <actions/>
     <description></description>
-    <displayName>Test Project MPipeline Strategy New</displayName>
+    <displayName>springboot-api-rest-example-created-with-ansible</displayName>
     <properties>
         <org.jenkinsci.plugins.pipeline.modeldefinition.config.FolderConfig plugin="pipeline-model-definition@1.5.0">
             <dockerLabel></dockerLabel>
