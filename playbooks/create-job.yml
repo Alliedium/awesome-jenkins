@@ -5,41 +5,39 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3.10
     jenkins_hostname: 127.0.0.1
-    jenkins_port: 8081
+    jenkins_port: 8082
+    jenkins_admin_user: admin
+    jenkins_admin_pass: admin
     java_packages:
       - openjdk-17-jdk
-    jenkins_job_config: "{{ lookup('file', 'templates/pipeline_job_config.xml') }}"
-    jenkins_multibranch_job_config: "{{ lookup('file', 'templates/multibranch_pipeline_config.xml') }}"
-    maven_script: "{{ lookup('file', 'groovy/maven_install.groovy') }}"
+    jenkins_maven_installations:
+      - 3.8.4
+      - 3.9.0
+    jenkins_job_config: "{{ lookup('template', 'config/job-config.xml.j2') }}"
+    jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
 
   pre_tasks:
     - include_vars: plugins.yml
 
   roles:
-    - {role: geerlingguy.jenkins, jenkins_plugins: "{{ plugins }}"}
+    - {role: geerlingguy.jenkins,  jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}"}
+    - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk}
 
-# jdk settings are at /var/lib/jenkins/config.xml
-#  maven settings hudson.tasks.Maven.xml
-  tasks:
-    - name: Obtaining a list of plugins
+  post_tasks:
+    - name: Adding maven to the jenkins
       community.general.jenkins_script:
-        script: 'println(Jenkins.instance.pluginManager.plugins)'
-        user: admin
-        password: admin
+        script: "{{ jenkins_maven_template }}"
+        user: "{{ jenkins_admin_user }}"
+        password: "{{ jenkins_admin_pass}}"
         url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
         validate_certs: false
+        timeout: 120
+      with_items: jenkins_maven_installation
     - name: Create jenkins job using basic authentication
       community.general.jenkins_job:
-        config: "{{ jenkins_multibranch_job_config }}"
-        name: mpipeline_job
-        user: admin
-        password: admin
-#        token: 1150518ddf064910afaed37f47716da023
+        config: "{{ jenkins_job_config }}"
+        name: spipeline_job
+        user: "{{ jenkins_admin_user }}"
+        password: "{{ jenkins_admin_pass}}"
         url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
-    - name: Adding maven plugin to the jenkins
-      community.general.jenkins_script:
-        script: '{{ maven_script }}'
-        user: admin
-        password: admin
-        url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
-
+        validate_certs: false
