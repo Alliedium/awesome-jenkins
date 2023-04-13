@@ -13,7 +13,7 @@
     jenkins_maven_installations:
       - 3.8.4
       - 3.9.0
-    jenkins_job_config: "{{ lookup('template', 'config/job-config.xml.j2') }}"
+    jenkins_job_config: "{{ lookup('template', 'job-config.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
 
   pre_tasks:
@@ -24,7 +24,7 @@
     - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk}
 
   post_tasks:
-    - name: Adding maven to the jenkins
+    - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
         user: "{{ jenkins_admin_user }}"
@@ -33,7 +33,7 @@
         validate_certs: false
         timeout: 120
       with_items: jenkins_maven_installation
-    - name: Create jenkins job using basic authentication
+    - name: Create Jenkins pipeline job
       community.general.jenkins_job:
         config: "{{ jenkins_job_config }}"
         name: spipeline_job
