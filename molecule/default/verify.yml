@@ -1,0 +1,31 @@
+- name: Verify
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Example assertion
+      ansible.builtin.assert:
+        that: true
+    - name: Check if Jenkins is running.
+      uri:
+        url: "http://localhost:8085/"
+        status_code:
+          - 200
+          - 403
+
+    - name: Get job state
+      community.general.jenkins_job_info:
+        name: "spipeline0"
+        user: "admin"
+        password: "admin"
+        url: "http://localhost:8085"
+        validate_certs: false
+      retries: 3
+      register: jenkins_job_info
+      until: >
+        jenkins_job_info.jobs[0]['name'] == 'spipeline0' and
+        'blue' in jenkins_job_info.jobs[0]['color']
+
+    - name: Get job info
+      ansible.builtin.debug:
+        msg: Job State {{ jenkins_job_info.jobs[0]['color'] }}
+      when: jenkins_job_info is defined

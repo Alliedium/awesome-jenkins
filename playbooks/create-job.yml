@@ -4,8 +4,8 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3.10
-    jenkins_hostname: 127.0.0.1
-    jenkins_port: 8082
+    jenkins_host: 127.0.0.1
+    jenkins_port: 8085
     jenkins_admin_user: admin
     jenkins_admin_pass: admin
     java_packages:
@@ -13,14 +13,16 @@
     jenkins_maven_installations:
       - 3.8.4
       - 3.9.0
-    jenkins_job_config: "{{ lookup('template', 'job-config.xml.j2') }}"
+    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
+    jenkins_job_name: spipeline0
+    jenkins_job_info: ""
 
   pre_tasks:
     - include_vars: plugins.yml
 
   roles:
-    - {role: geerlingguy.jenkins,  jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}"}
+    - {role: geerlingguy.jenkins, jenkins_hostname: "{{ jenkins_host }}", jenkins_http_port: "{{ jenkins_port }}", jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}"}
     - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk}
 
   post_tasks:
@@ -29,15 +31,28 @@
         script: "{{ jenkins_maven_template }}"
         user: "{{ jenkins_admin_user }}"
         password: "{{ jenkins_admin_pass}}"
-        url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
+        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
         validate_certs: false
         timeout: 120
       with_items: jenkins_maven_installation
     - name: Create Jenkins pipeline job
       community.general.jenkins_job:
         config: "{{ jenkins_job_config }}"
-        name: spipeline_job
+        name: "{{ jenkins_job_name }}"
         user: "{{ jenkins_admin_user }}"
         password: "{{ jenkins_admin_pass}}"
-        url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}"
+        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
         validate_certs: false
+    - name: Get Jenkins pipeline job status
+      community.general.jenkins_job_info:
+        name: "{{ jenkins_job_name }}"
+        user: "{{ jenkins_admin_user }}"
+        password: "{{ jenkins_admin_pass}}"
+        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
+        validate_certs: false
+      retries: 3
+    - name: Trigger Jenkins build
+      command: >
+        java -jar {{ jenkins_jar_location }} -s  http://{{ jenkins_host }}:{{ jenkins_port }} -auth {{ jenkins_admin_user }}:{{ jenkins_admin_pass }} build {{ jenkins_job_name }}
+
+
