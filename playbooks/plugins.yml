@@ -1,5 +1,6 @@
 plugins:
   - build-timeout
+  - build-token-root
   - branch-api
   - credentials
   - checks-api
