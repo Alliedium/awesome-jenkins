@@ -4,6 +4,8 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3.10
+    jenkins_install_lts: true
+    jenkins_repo_key: "https://pkg.jenkins.io/debian{{ '-stable' if (jenkins_install_lts | bool) else '' }}/jenkins.io-2023.key"
     jenkins_host: 127.0.0.1
     jenkins_port: 8085
     jenkins_admin_user: admin
@@ -21,9 +23,8 @@
     - include_vars: plugins.yml
 
   roles:
-    - {role: geerlingguy.jenkins, jenkins_hostname: "{{ jenkins_host }}", jenkins_http_port: "{{ jenkins_port }}", jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}"}
-    - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk}
-  tags: notest
+    - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk }
+    - {role: geerlingguy.jenkins, jenkins_hostname: "{{ jenkins_host }}", jenkins_http_port: "{{ jenkins_port }}", jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}", jenkins_prefer_lts: "{{ jenkins_install_lts }}", jenkins_repo_key_url: "{{ jenkins_repo_key }}"}
 
   post_tasks:
     - name: Add maven to Jenkins

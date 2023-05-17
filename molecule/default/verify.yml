@@ -12,14 +12,15 @@
           - 200
           - 403
 
-    - name: Get job state
+    - name: Check job is state
       community.general.jenkins_job_info:
         name: "spipeline0"
         user: "admin"
         password: "admin"
-        url: "http://localhost:8085"
+        url: "http://127.0.0.1:8085"
         validate_certs: false
-      retries: 3
+      retries: 15
+      delay: 60
       register: jenkins_job_info
       until: >
         jenkins_job_info.jobs[0]['name'] == 'spipeline0' and
