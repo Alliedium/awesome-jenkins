@@ -16,7 +16,6 @@
     jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
     jenkins_job_name: spipeline0
-    jenkins_job_info: ""
 
   pre_tasks:
     - include_vars: plugins.yml
