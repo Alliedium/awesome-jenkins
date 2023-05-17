@@ -1,6 +1,6 @@
 ---
 - name: Converge
-  hosts: all
+  hosts: localhost
 
   pre_tasks:
     - name: Update apt cache.
