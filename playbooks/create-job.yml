@@ -23,7 +23,7 @@
     - name: Set jenkins_repo_key_latest_url
       ansible.builtin.set_fact:
         jenkins_repo_key_latest_url: "https://pkg.jenkins.io/{{ ansible_os_family | lower }}{{ '-stable' if (jenkins_install_lts | bool) else '' }}/jenkins.io-2023.key"
-      when: ansible_os_family == 'Debian' or ansible_os_familty == 'RedHat'
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
 
   roles:
     # - {role: geerlingguy.java, become: yes, java_packages: "{{ java_versions }}" }
