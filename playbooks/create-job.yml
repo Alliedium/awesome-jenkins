@@ -11,7 +11,7 @@
     jenkins_admin_user: admin
     jenkins_admin_pass: admin
     java_versions:
-      - openjdk-17-jdk
+      - openjdk-11-jdk
     jenkins_maven_installations:
       - 3.8.4
       - 3.9.0
@@ -21,11 +21,7 @@
 
   pre_tasks:
     - include_vars: plugins.yml
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: true
-      changed_when: false
-      
+
   roles:
     - {role: geerlingguy.java, become: yes, java_packages: "{{ java_versions }}" }
     - {role: geerlingguy.jenkins, jenkins_hostname: "{{ jenkins_host }}", jenkins_http_port: "{{ jenkins_port }}", jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}", jenkins_prefer_lts: "{{ jenkins_install_lts }}", jenkins_repo_key_url: "{{ jenkins_repo_key }}"}
