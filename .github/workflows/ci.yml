@@ -21,4 +21,4 @@ jobs:
         with:
           image: ubuntu
           tag: latest
-          command: "--debug test"
+          command: ["--debug", "test"]
