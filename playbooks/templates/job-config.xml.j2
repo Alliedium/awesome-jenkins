@@ -79,7 +79,7 @@
       echo &apos;Download dependencies&apos;
         withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
           sh &quot;cd api \n\
-          mvn -B -ntp compile -P default&quot;
+          mvn -B -ntp compile&quot;
           }
         }
     }
