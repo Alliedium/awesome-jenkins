@@ -11,7 +11,9 @@
         status_code:
           - 200
           - 403
-
+    - name: Install python-jenkins
+      ansible.builtin.pip:
+        name: python-jenkins>=0.4.12
     - name: Check job is state
       community.general.jenkins_job_info:
         name: "spipeline0"
