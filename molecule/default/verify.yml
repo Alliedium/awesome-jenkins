@@ -23,5 +23,6 @@
       delay: 60
       register: jenkins_job_info
       until: >
+        jobs in jenkins_job_info and
         jenkins_job_info.jobs[0]['name'] == 'spipeline0' and
         'blue' in jenkins_job_info.jobs[0]['color']
