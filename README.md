@@ -1,10 +1,12 @@
-# Install Jenkins with plugins, create multibranch with ansible-playbook on Linux ubuntu
+## Prerequisites
+* [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox)
+* [Ansible is installed](https://github.com/Alliedium/awesome-ansible/)
 
 ## Playbook variables used in Jenkins server installation:
 1. Jenkins host:
     `jenkins_hostname: 127.0.0.1`
 2. Jenkins port: 
-    `jenkins_port: 8082`
+    `jenkins_port: 8085`
 3.  Admin account credentials which will be created the first time Jenkins is installed: - check users in role
     `jenkins_admin_user: admin
      jenkins_admin_password: admin`
@@ -23,12 +25,13 @@
     `ansible-galaxy install --roles-path=./playbooks geerlingguy.java`
 2. Run ansible playbook to install and config Jenkins server and create job:
     `ansible-playbook ~/ansible-jenkins/playbooks/create-job.yml -i ./inventory`
-3. Go to the browser and check that Jenkins is available at http://localhost:8082/.
+3. Go to the browser and check that Jenkins is available at http://localhost:8085/.
 4. Login to Jenkins using the credentials.
 5. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 6. The main branch will be run ![single_pipeline.png](./images/02jenkins_staged_build_view.png)
 
 ### Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
+
 ### Job configuration:
    Job configuration is set in the templates/job-config.xml.j2.

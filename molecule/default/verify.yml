@@ -24,8 +24,3 @@
       until: >
         jenkins_job_info.jobs[0]['name'] == 'spipeline0' and
         'blue' in jenkins_job_info.jobs[0]['color']
-
-    - name: Get job info
-      ansible.builtin.debug:
-        msg: Job State {{ jenkins_job_info.jobs[0]['color'] }}
-      when: jenkins_job_info is defined

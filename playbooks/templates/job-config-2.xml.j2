@@ -44,9 +44,6 @@
         </hudson.model.ParametersDefinitionProperty>
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
             <triggers>
-<!--        <hudson.triggers.TimerTrigger>-->
-<!--          <spec>H 10-18 * * *</spec>-->
-<!--        </hudson.triggers.TimerTrigger>-->
                 <org.jenkinsci.plugins.pipeline.maven.trigger.WorkflowJobDependencyTrigger plugin="pipeline-maven@1298.v43b_82f220a_e9">
                     <spec/>
                 </org.jenkinsci.plugins.pipeline.maven.trigger.WorkflowJobDependencyTrigger>
@@ -74,7 +71,7 @@
             stages {
             stage( &apos;Clone&apos;) {
             steps {
-            git url: &apos;https://github.com/KaIsa9/springboot-api-rest-example.git/&apos;
+            git url: &apos;https://github.com/Alliedium/springboot-api-rest-example.git/&apos;
             }
             }
             stage(&apos;Build&apos;){
@@ -85,7 +82,7 @@
             echo &apos;Download dependencies&apos;
             withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
             sh &quot;cd api \n\
-            mvn -X -ntp install -P default&quot;
+            mvn -B -ntp compile -P default&quot;
             }
             }
             }
@@ -99,7 +96,7 @@
             currentCheckstyleRulesStr = getCheckstyleRules(params.CHECKSTYLE_RULES_SET)
             sh &quot;echo ${currentCheckstyleRulesStr} \n\
             cd api\n\
-            mvn -X install -P static-code-analysis ${currentCheckstyleRulesStr}\n\
+            mvn -B -ntp clean compile -P static-code-analysis ${currentCheckstyleRulesStr}\n\
             echo \&quot;static code analysis finished\&quot;&quot;
             }
 
@@ -120,7 +117,7 @@
             echo &apos;Test&apos;
             withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
             sh &quot;cd api\n\
-            mvn install -P tests&quot;
+            mvn -B -ntp clean test -P tests&quot;
             }
             }
 
