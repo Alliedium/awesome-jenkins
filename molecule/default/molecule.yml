@@ -1,0 +1,37 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+driver:
+  name: docker
+lint:
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: instance
+#    image: geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest
+#    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    cgroupns_mode: host
+    privileged: true
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+
+scenario:
+  test_sequence:
+    - dependency
+    - cleanup
+#    - syntax
+    - create
+    - converge
+    - verify
+    - cleanup
+    - destroy

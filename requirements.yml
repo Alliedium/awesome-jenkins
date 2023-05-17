@@ -1,0 +1,6 @@
+---
+roles:
+  - name: geerlingguy.jenkins
+  - name: geerlingguy.java
+collections:
+  - name: ansible.posix

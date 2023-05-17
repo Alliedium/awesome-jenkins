@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: localhost
+
+  vars:
+    jenkins_port: 8085
+
+- name: Run main playbook
+  import_playbook: ../../playbooks/create-job.yml

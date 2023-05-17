@@ -1,0 +1,173 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1289.vd1c337fd5354">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2125.vddb_a_44a_d605e">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>MAVEN_VERSION</string>
+        <string>CHECKSTYLE_RULES_SET</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>CHECKSTYLE_RULES_SET</name>
+          <description>Select xml file with checkstyle rules</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>sun_checks</string>
+              <string>sun_checks_with_suppressions</string>
+              <string>custom_checks</string>
+              <string>custom_checks_with_suppressions</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>MAVEN_VERSION</name>
+          <description>Select maven version</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              {% for version in jenkins_maven_installations %}
+                <string>maven{{ version }}</string>
+              {% endfor %}
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+<!--    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>-->
+<!--      <triggers>-->
+<!--        <hudson.triggers.TimerTrigger>-->
+<!--          <spec>H 10-18 * * *</spec>-->
+<!--        </hudson.triggers.TimerTrigger>-->
+<!--      </triggers>-->
+<!--    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>-->
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3653.v07ea_433c90b_4">
+    <script>pipeline {
+  agent any
+  parameters {
+    choice(
+    choices: [&apos;sun_checks&apos;, &apos;sun_checks_with_suppressions&apos;, &apos;custom_checks&apos;, &apos;custom_checks_with_suppressions&apos;],
+    description: &apos;Select xml file with checkstyle rules&apos;,
+    name: &apos;CHECKSTYLE_RULES_SET&apos;)
+    choice(
+    choices: [&apos;maven3.8.4&apos;, &apos;maven3.9.0&apos;],
+    description: &apos;Select maven version&apos;,
+    name: &apos;MAVEN_VERSION&apos;)
+  }
+  
+ 
+  stages {
+    stage( &apos;Clone&apos;) {
+        steps {
+            git url: &apos;https://github.com/Alliedium/springboot-api-rest-example.git/&apos;
+        }
+    }
+    stage(&apos;Build&apos;){
+      options {
+          timeout(time:10, unit: &apos;MINUTES&apos; )
+          }
+      steps{
+      echo &apos;Download dependencies&apos;
+        withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
+          sh &quot;cd api \n\
+          mvn -B -ntp compile -P default&quot;
+          }
+        }
+    }
+    stage(&apos;Static code analysis&apos;){
+        options {
+            timeout(time:10, unit: &apos;MINUTES&apos; )
+            }
+        steps{
+          script{
+            echo &apos;Static code analysis&apos;
+            currentCheckstyleRulesStr = getCheckstyleRules(params.CHECKSTYLE_RULES_SET)
+            sh &quot;echo ${currentCheckstyleRulesStr} \n\
+            cd api\n\
+              mvn -B clean compile -P static-code-analysis ${currentCheckstyleRulesStr}\n\
+              echo \&quot;static code analysis finished\&quot;&quot;
+              }
+            
+            echo &quot;Reading static analysis report&quot;
+            recordIssues enabledForFailure: true, failOnError: false, tool:checkStyle(pattern: &quot;**/target/checkstyle-result.xml&quot;)
+            recordIssues enabledForFailure: true, failOnError: false, tool:spotBugs(pattern: &quot;**/target/spotbugs*.xml&quot;)
+            recordIssues enabledForFailure: true, failOnError: false, tool:cpd(pattern: &quot;**/target/cpd.xml&quot;)
+            recordIssues enabledForFailure: true, failOnError: false, tool:pmdParser(pattern: &quot;**/target/pmd.xml&quot;)
+        }
+    }        
+
+   stage(&apos;Test&apos;){
+      options {
+          timeout(time:10, unit: &apos;MINUTES&apos; )
+      }
+      steps{
+        script{
+          echo &apos;Test&apos;
+          withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
+          sh &quot;cd api\n\
+          mvn -B -ntp clean test -P tests&quot;
+          }
+      }
+          
+          publishHTML([
+            allowMissing: true,
+            keepAll:true,
+            alwaysLinkToLastBuild: true,
+            reportDir: &apos;api/target/site/jacoco&apos;,
+            reportFiles: &apos;index.html&apos;,
+            reportName: &apos;Jacoco coverage HTML report&apos;])
+      }        
+  }
+  }
+}
+def getMavenVersion(String selectedMavenVersion) {
+  String mvnVersion = &apos;&apos;
+    switch(selectedMavenVersion){
+      case &quot;maven3.8.4&quot;:
+            mvnVersion = &apos;maven3.8.4&apos;
+            break
+      case &quot;maven3.9.0&quot;:
+            mvnVersion = &apos;maven3.9.0&apos;
+            break
+      default:
+            mvnVersion = &apos;maven3.8.4&apos;
+            break
+      }  
+      return mvnVersion
+}
+
+
+def getCheckstyleRules(String selectedCheckstyleRules) {
+  String mvnOptions = &apos;&apos;
+    switch(selectedCheckstyleRules){
+      case &quot;sun_checks&quot;:
+            mvnOptions = &apos;-Dcodestyle.checks.file=./codestyle/sun_checks.xml&apos;
+            break
+      case &quot;sun_checks_with_suppressions&quot;:
+            mvnOptions = &apos;-Dcodestyle.checks.file=./codestyle/sun_checks.xml -Dcodestyle.suppressions.file=./codestyle/checkstyle_suppressions.xml&apos;
+            break
+      case &quot;custom_checks&quot;:
+            mvnOptions = &apos;-Dcodestyle.checks.file=./codestyle/checkstyle_checks.xml&apos;
+            break
+      case &quot;custom_checks_with_suppressions&quot;:
+            mvnOptions = &apos;-Dcodestyle.checks.file=./codestyle/checkstyle_checks.xml -Dcodestyle.suppressions.file=./codestyle/checkstyle_suppressions.xml&apos;
+            break
+      default:
+            mvnOptions = &apos;-Dcodestyle.checks.file=./codestyle/sun_checks.xml&apos;
+            break
+      }  
+      return mvnOptions
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <disabled>false</disabled>
+</flow-definition>
