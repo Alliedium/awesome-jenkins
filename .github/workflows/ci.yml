@@ -16,8 +16,17 @@ jobs:
         with:
           path: "${{ github.repository }}"
 
-      - name: molecule
-        uses: robertdebock/molecule-action@5.0.2
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
         with:
-          image: ubuntu
-          tag: latest
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
+
+      - name: Run Molecule tests
+        run: molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: 'ubuntu2204'
