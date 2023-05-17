@@ -117,7 +117,8 @@
             echo &apos;Test&apos;
             withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
             sh &quot;cd api\n\
-            mvn -B -ntp clean test -P tests&quot;
+            mvn -B -ntp clean test -P tests \n\
+            mvn jacoco:report&quot;
             }
             }
 
