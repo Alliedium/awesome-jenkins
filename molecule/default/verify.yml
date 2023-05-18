@@ -1,5 +1,5 @@
 - name: Verify
-  hosts: localhost
+  hosts: all
   gather_facts: true
   tasks:
     - name: Example assertion
