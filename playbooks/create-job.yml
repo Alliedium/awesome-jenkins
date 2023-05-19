@@ -4,7 +4,7 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3.10
-    jenkins_install_lts: true    
+    jenkins_install_lts: true
     jenkins_host: 127.0.0.1
     jenkins_port: 8085
     jenkins_admin_user: admin
@@ -14,9 +14,9 @@
     jenkins_maven_installations:
       - 3.8.4
       - 3.9.0
-    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
-    #jenkins_git_file: "{{ lookup('file', 'templates/git-install.groovy') }}"
+    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
+    jenkins_multibranch_job_config: "{{ lookup('file', 'templates/multibranch_pipeline_config.xml') }}"
     jenkins_job_name: spipeline0
 
   pre_tasks:

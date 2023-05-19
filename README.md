@@ -1,6 +1,7 @@
 ## Prerequisites
 * [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox)
-* [Ansible is installed](https://github.com/Alliedium/awesome-ansible/)
+* [Ansible is installed. Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine))
+* [Molecule is installed](https://github.com/Alliedium/awesome-ansible/)
 
 ## Playbook variables used in Jenkins server installation:
 1. Jenkins host:
