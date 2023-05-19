@@ -11,9 +11,9 @@
         status_code:
           - 200
           - 403
-    - name: Check job is state
+    - name: Check pipeline job is state
       community.general.jenkins_job_info:
-        name: "spipeline0"
+        name: "pipeline-job"
         user: "admin"
         password: "admin"
         url: "http://127.0.0.1:8085"
@@ -23,5 +23,5 @@
       register: jenkins_job_info
       until: >
         'jobs' in jenkins_job_info and
-        jenkins_job_info.jobs[0]['name'] == 'spipeline0' and
+        jenkins_job_info.jobs[0]['name'] == 'pipeline-job' and
         'blue' in jenkins_job_info.jobs[0]['color']

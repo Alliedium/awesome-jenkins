@@ -2,7 +2,7 @@
 <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.21">
     <actions/>
     <description></description>
-    <displayName>Test Project MPipeline Strategy New</displayName>
+    <displayName>{{ jenkins_multibranch_job_name }}</displayName>
     <properties>
         <org.jenkinsci.plugins.pipeline.modeldefinition.config.FolderConfig plugin="pipeline-model-definition@1.5.0">
             <dockerLabel></dockerLabel>
@@ -25,12 +25,7 @@
         <daysToKeep>-1</daysToKeep>
         <numToKeep>-1</numToKeep>
     </orphanedItemStrategy>
-    <triggers>
-        <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.11">
-            <spec>* * * * *</spec>
-            <interval>60000</interval>
-        </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
-    </triggers>
+    <triggers/>
     <disabled>false</disabled>
     <sources class="jenkins.branch.MultiBranchProject$BranchSourceList" plugin="branch-api@2.5.5">
         <data>
@@ -38,16 +33,16 @@
                 <source class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@1701.v00cc8184df93">
                     <id>0f116140-3d05-479a-a133-c0174719202f</id>
                     <apiUri>https://api.github.com</apiUri>
-                    <repoOwner>KaIsa9</repoOwner>
+                    <repoOwner>Alliedium</repoOwner>
                     <repository>springboot-api-rest-example</repository>
-                    <repositoryUrl>https://github.com/KaIsa9/springboot-api-rest-example.git</repositoryUrl>
+                    <repositoryUrl>https://github.com/Alliedium/springboot-api-rest-example.git</repositoryUrl>
                     <traits>
                         <org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
                             <strategyId>3</strategyId>
                         </org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
                         <org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
-                            <strategyId>1</strategyId>
-                            <trust class="org.jenkinsci.plugins.github_branch_source.ForkPullRequestDiscoveryTrait$TrustPermission"/>
+                            <strategyId>3</strategyId>
+                            <trust class="org.jenkinsci.plugins.github_branch_source.ForkPullRequestDiscoveryTrait$TrustEveryone"/>
                         </org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
                         <org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
                             <strategyId>1</strategyId>
