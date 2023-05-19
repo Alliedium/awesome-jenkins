@@ -41,14 +41,6 @@
         name:
           - python-jenkins==1.8.0
           - urllib3<2.0.2
-  #  - name: Add git to Jenkins
-  #    community.general.jenkins_script:
-  #      script: "{{ jenkins_git_file }}"
-  #     user: "{{ jenkins_admin_user }}"
-  #      password: "{{ jenkins_admin_pass}}"
-  #      url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
-  #      validate_certs: false
-  #      timeout: 120
     - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
