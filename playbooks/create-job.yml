@@ -16,6 +16,7 @@
       - 3.9.0
     jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
+    #jenkins_git_file: "{{ lookup('file', 'templates/git-install.groovy') }}"
     jenkins_job_name: spipeline0
 
   pre_tasks:
@@ -24,6 +25,11 @@
       ansible.builtin.set_fact:
         jenkins_repo_key_latest_url: "https://pkg.jenkins.io/{{ ansible_os_family | lower }}{{ '-stable' if (jenkins_install_lts | bool) else '' }}/jenkins.io-2023.key"
       when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
 
   roles:
     - {role: geerlingguy.java, become: yes, java_packages: "{{ java_versions }}" }
@@ -35,6 +41,14 @@
         name:
           - python-jenkins==1.8.0
           - urllib3<2.0.2
+  #  - name: Add git to Jenkins
+  #    community.general.jenkins_script:
+  #      script: "{{ jenkins_git_file }}"
+  #     user: "{{ jenkins_admin_user }}"
+  #      password: "{{ jenkins_admin_pass}}"
+  #      url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
+  #      validate_certs: false
+  #      timeout: 120
     - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
