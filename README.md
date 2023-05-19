@@ -1,7 +1,11 @@
 ## Prerequisites
-* [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox)
+* [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example).  
 * [Ansible is installed. Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine))
-* [Molecule is installed](https://github.com/Alliedium/awesome-ansible/)
+* Install molecule on Ubuntu linux:
+      ``` apt update
+        apt install pip
+        python3 -m pip install molecule ansible-core
+        pip3 install 'molecule-plugins[docker]'```
 
 ## Playbook variables used in Jenkins server installation:
 1. Jenkins host:
@@ -29,7 +33,8 @@
 3. Go to the browser and check that Jenkins is available at http://localhost:8085/.
 4. Login to Jenkins using the credentials.
 5. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
-6. The main branch will be run ![single_pipeline.png](./images/02jenkins_staged_build_view.png)
+6. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
+7. The pull-requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
 
 ### Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
