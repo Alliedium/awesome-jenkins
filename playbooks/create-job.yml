@@ -40,7 +40,7 @@
         name:
           - python-jenkins==1.8.0
           - urllib3<2.0.2
-      delegate_to: 127.0.0.1
+#      delegate_to: 127.0.0.1
     - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
@@ -63,7 +63,7 @@
     - name: Trigger Jenkins build on pipeline job
       command: >
         java -jar {{ jenkins_jar_location }} -s  http://{{ jenkins_host }}:{{ jenkins_port }} -auth {{ jenkins_admin_user }}:{{ jenkins_admin_pass }} build {{ jenkins_job_name }}
-      delegate_to: 127.0.0.1
+#      delegate_to: 127.0.0.1
       tags: [ never, pipeline ]
     - name: Create Jenkins multi pipeline job
       community.general.jenkins_job:
@@ -73,7 +73,7 @@
         password: "{{ jenkins_admin_pass}}"
         url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
         validate_certs: false
-      delegate_to: 127.0.0.1
+#      delegate_to: 127.0.0.1
       tags: [ never, multipipeline ]
     - name: Get Jenkins pipeline job status
       community.general.jenkins_job_info:
@@ -82,7 +82,7 @@
         password: "{{ jenkins_admin_pass}}"
         url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
         validate_certs: false
-      delegate_to: 127.0.0.1
+#      delegate_to: 127.0.0.1
       retries: 3
       tags: [ never, pipeline ]
 
