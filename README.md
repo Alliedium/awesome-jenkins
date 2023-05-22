@@ -23,13 +23,20 @@
       - 3.8.4
       - 3.9.0
 6. [List of plugins that will be installed](ListofJenkinsPluginsToBeInstalled.md)
-
+o
 # Instructions to install Jenkins with ansible playbook:
-1. Install ansible roles for [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) and [Java](https://github.com/geerlingguy/ansible-role-java/) using commands:
+1. Install ansible roles for [Java](https://github.com/geerlingguy/ansible-role-java/), [Git](https://github.com/geerlingguy/ansible-role-git/), and [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) using commands:
     `ansible-galaxy install --roles-path=./playbooks geerlingguy.jenkins`
     `ansible-galaxy install --roles-path=./playbooks geerlingguy.java`
-2. Run ansible playbook to install and config Jenkins server and create job:
-    `ansible-playbook ~/ansible-jenkins/playbooks/create-job.yml -i ./inventory`
+2. Run ansible playbook 
+   1. Run all tasks from playbook.yml:
+      `ansible-playbook ./playbooks/create-job.yml -i ./inventory`
+   2. Run without creating any pipeline:
+      `ansible-playbook ./playbooks/create-job.yml -i ./inventory --skip-tags never`
+   3. Create only simple pipeline:
+      `ansible-playbook ./playbooks/create-job.yml -i ./inventory --tags[always,pipeline]`
+   4. See the list of all tasks:
+      `ansible-playbook ./playbooks/create-job.yml -i ./inventory --skip-tags never --list-tags`
 3. Go to the browser and check that Jenkins is available at http://localhost:8085/.
 4. Login to Jenkins using the credentials.
 5. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
