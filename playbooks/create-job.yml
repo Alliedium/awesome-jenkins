@@ -50,7 +50,6 @@
         validate_certs: false
         timeout: 120
       with_items: jenkins_maven_installation
-      delegate_to: 127.0.0.1
     - name: Create Jenkins pipeline job
       community.general.jenkins_job:
         config: "{{ jenkins_job_config }}"
