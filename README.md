@@ -1,9 +1,11 @@
 ## This ansible playbook installs the [`jenkins`](https://www.jenkins.io/doc/) on the specified host ##
 
 # Prerequisites
-* To run the ansible playbook use `Debian` or `Ubuntu` `Linux` distribution. [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example).  
+* Run the ansible playbook on `Debian` or `Ubuntu` Linux distribution. [We used Jammy ubuntu VM ](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+
 * Install Ansible [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
-* Install `molecule` on Ubuntu `Linux`. Molecule project is designed to aid in the development and testing of Ansible roles.
+
+* [Install `molecule`](https://molecule.readthedocs.io/installation/) on `Ubuntu` Linux. Molecule project is designed to aid in the development and testing of Ansible roles.
   
    ```
    apt update
@@ -57,7 +59,7 @@
 
 ### 3. Run ansible playbook 
 
-  This playbook contains many tasks that install `git`, `java`, `jenkins`, as well as plugins, tools and pipelines in `jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 7 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5`, and `step6`. Use `-t <tag_name>` flag to specify desired tag. The tags form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag contains the tasks of the previous tag, e.g. if you run playbook with `step3` tag, will be run tasks tagged with `always`, `step1`, `step2` and `step3` tags.
+  This playbook contains multiple tasks that install `git`, `java`, `jenkins`, as well as plugins, tools and pipelines in `jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 7 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5` and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `alway` to `step6`. In this hierarchy, each subsequent tag includes both its tasks and the tasks of the previous tag., e.g. if you run playbook with `step3` tag, will be run tasks tagged with `always`, `step1`, `step2` and `step3` tags.
 
    1. Before running tasks, check the list of tasks that will be executed using `--list-tasks` flag
    
