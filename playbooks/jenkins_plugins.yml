@@ -1,0 +1,26 @@
+jenkins_plugins:
+  - build-timeout
+  - build-token-root
+  - branch-api
+  - credentials
+  - checks-api
+  - echarts-api
+  - git
+  - git-client
+  - github
+  - github-api
+  - github-client
+  - github-branch-source
+  - htmlpublisher
+  - junit
+  - maven-plugin
+  - pipeline
+  - pipeline-groovy
+  - pipeline-maven
+  - pipeline-model-definition
+  - pipeline-stage-step
+  - pipeline-stage-view
+  - scm-api
+  - warnings-ng
+  - workflow-api
+  - workspace-cleanup
