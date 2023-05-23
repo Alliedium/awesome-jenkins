@@ -19,6 +19,7 @@
 
   pre_tasks:
     - include_vars: plugins.yml
+      tags: always
     - name: Set jenkins_repo_key_latest_url
       ansible.builtin.set_fact:
         jenkins_repo_key_latest_url: "https://pkg.jenkins.io/{{ ansible_os_family | lower }}{{ '-stable' if (jenkins_install_lts | bool) else '' }}/jenkins.io-2023.key"
