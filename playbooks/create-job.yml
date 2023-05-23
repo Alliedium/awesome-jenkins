@@ -33,6 +33,12 @@
     - { role: geerlingguy.jenkins, tags: [ step2, step3, step4, step5, step6 ], jenkins_plugins: "{{ plugins }}", jenkins_prefer_lts: "{{ jenkins_install_lts }}", jenkins_repo_key_url: "{{ jenkins_repo_key_latest_url }}" }
 
   post_tasks:
+    - name: Install Python pip
+      apt: name={{ item }} update_cache=true state=present force_apt_get=yes
+      with_items:
+      - python3-pip
+      become: true
+      tags: [ step3, step4, step5, step6 ]
     - name: Install python-jenkins
       ansible.builtin.pip:
         name:
