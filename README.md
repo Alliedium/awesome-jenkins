@@ -95,7 +95,7 @@
    ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step2
    ```
 
-   5. Step3 - Install `python-jenkins`
+   5. Use `Step3` tag - install `python-jenkins`
    
    ```
    ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step3
@@ -121,14 +121,14 @@
 
 ### 4. Check `jenkins`
 
-1. Go to the browser and check that Jenkins is available at http://localhost:8085/.
+1. Go to the host specified in the `inventory/host.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
 2. Login to Jenkins using the credentials.
 3. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
 5. The pull-requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
 
-### Project:
+## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
-### Job configuration:
-   Job configuration is set in the templates/job-config.xml.j2.
+## Job configuration:
+   Job configuration is set in the `templates/job-config.xml.j2` and `templates/job-config-2.xml.j2`.
