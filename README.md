@@ -132,5 +132,73 @@
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
-## Job configuration:
-   Job configuration is set in the `templates/job-config.xml.j2` and `templates/job-config-2.xml.j2`.
+### Job configuration:
+   Job configuration is set in the templates/job-config.xml.j2 - pipeline config and templates/multibranch-pipeline-config.xml.j2
+
+### Install Nektos Act on Ubuntu Jammy
+   ```
+   sudo apt install act
+   ```
+  To install Nektos Act on other OS follow the instructions from [section](https://github.com/nektos/act#installation-through-package-managers)
+
+
+## References
+
+### Ansible roles
+https://github.com/geerlingguy/ansible-role-java/
+https://github.com/geerlingguy/ansible-role-git/
+https://github.com/geerlingguy/ansible-role-jenkins
+
+### GitOps workflow
+https://www.polestarllp.com/blog/devops-guide-pipeline-challenges-latest-trends
+https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+https://rafay.co/the-kubernetes-current/gitops-principles-and-workflows-every-team-should-know/
+
+### Maven profiles
+https://maven.apache.org/guides/introduction/introduction-to-profiles.html
+https://www.baeldung.com/maven-profiles
+https://medium.com/javarevisited/maven-profiles-detailed-explanation-1b4c8204466a
+
+### CI/CD
+https://www.synopsys.com/glossary/what-is-cicd.html
+https://www.redhat.com/en/topics/devops/what-is-ci-cd
+https://about.gitlab.com/topics/ci-cd/
+
+### CI/CD Tools
+https://testsigma.com/blog/ci-cd-tools/
+https://www.educative.io/answers/what-is-the-difference-between-jenkins-and-jenkins-x
+https://jenkins.io/
+https://jenkins-x.io/
+https://docs.github.com/en/actions
+https://argoproj.github.io/argo-workflows/
+https://tekton.dev/
+https://docs.gitlab.com/ee/ci/
+
+### Jenkins pipelines
+https://www.jenkins.io/doc/book/pipeline/getting-started/
+https://www.jenkins.io/doc/book/pipeline/jenkinsfile/
+https://www.jenkins.io/doc/book/pipeline/syntax/
+https://plugins.jenkins.io/pipeline-stage-view/
+
+### Debugging Jenkins pipeline
+https://www.jenkins.io/doc/book/managing/script-console/
+https://notes.asaleh.net/posts/debugging-jenkins-pipeline/
+https://dzone.com/articles/10-tips-to-debug-jenkins-pipelines
+https://github.com/jenkinsci/JenkinsPipelineUnit
+
+### Static code analysis
+https://spotbugs.github.io/spotbugs-maven-plugin/
+https://pmd.github.io/latest/pmd_userdocs_tools_maven.html
+https://checkstyle.org/
+https://www.softwaretestinghelp.com/code-coverage-tools/style
+https://www.sw-engineering-candies.com/blog-1/comparison-of-findbugs-pmd-and-checkstyle
+https://spotbugs.readthedocs.io/en/stable/introduction.html
+https://spotbugs.readthedocs.io/en/stable/maven.html
+https://plugins.jenkins.io/warnings-ng/
+https://www.softwaretestinghelp.com/code-coverage-tools/
+https://www.eclemma.org/jacoco/trunk/doc/maven.html
+https://www.baeldung.com/jacoco
+https://plugins.jenkins.io/htmlpublisher/
+
+### Act
+https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm

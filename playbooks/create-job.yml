@@ -12,7 +12,7 @@
       - 3.8.4
       - 3.9.0
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
-    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
+    jenkins_job_config: "{{ lookup('template', 'job-config.xml.j2') }}"
     jenkins_multibranch_job_config: "{{ lookup('template', 'multibranch-pipeline-config.xml.j2') }}"
     jenkins_job_name: pipeline-job
     jenkins_multibranch_job_name: multi-pipeline-job
