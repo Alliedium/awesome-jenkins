@@ -1,7 +1,7 @@
-## This ansible playbook installs the [`Jenkins`](https://www.jenkins.io/doc/) on the specified host ##
+## This ansible playbook installs [`Jenkins`](https://www.jenkins.io/doc/) on specified host ##
 
 # Prerequisites
-* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu ](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
 
 * Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 
@@ -18,27 +18,31 @@
 
 1. The HTTP port for Jenkins' web interface:
 
-   `jenkins_http_port: 8085`
+   ```
+   jenkins_http_port: 8085
+   ```
 
 2. Admin account credentials which will be created the first time Jenkins is installed: - check users in role
 
-   `jenkins_admin_username: admin`
-
-   `jenkins_admin_password: admin`
+   ```
+   jenkins_admin_username: admin
+   jenkins_admin_password: admin
+   ```
 
 3. Java version:
    
-   `java_packages: `
-
-   &nbsp;&nbsp;&nbsp;&nbsp;  ` - openjdk-17-jdk`
+   ```   
+   java_packages: 
+      - openjdk-17-jdk
+   ```
 
 4. Install global tools. Maven versions:
     
-    `jenkins_maven_installations:`
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;`- 3.8.4`
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;`- 3.9.0`
+   ```
+   jenkins_maven_installations:
+     - 3.8.4
+     - 3.9.0
+   ```
 
 5. [List of plugins that will be installed](ListofJenkinsPluginsToBeInstalled.md)
 
@@ -65,14 +69,12 @@
    
    ```
    ansible-playbook ./playbooks/create-job.yml -i ./inventory --list-tasks
-
    ```
 
    You will receive a list of all tasks. Using `-t step2` when getting a list of tasks.
 
    ```
    ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step2 --list-tasks
-
    ```
 
    You will receive a list of tasks, tagged `always`, `step1` and `step2`.
@@ -121,11 +123,11 @@
 
 ### 4. Check `Jenkins`
 
-1. Go to the host specified in the `inventory/host.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
+1. Go to the host specified in the `inventory/hosts.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
 2. Login to Jenkins using the credentials.
 3. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
-5. Pull-requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
+5. Pull requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
 
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
