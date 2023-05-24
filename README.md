@@ -22,7 +22,7 @@
    jenkins_http_port: 8085
    ```
 
-2. Admin account credentials which will be created the first time Jenkins is installed: - check users in role
+2. Admin account credentials which will be created the first time Jenkins is installed:
 
    ```
    jenkins_admin_username: admin
@@ -33,7 +33,7 @@
    
    ```   
    java_packages: 
-      - openjdk-17-jdk
+     - openjdk-17-jdk
    ```
 
 4. Install global tools. Maven versions:
