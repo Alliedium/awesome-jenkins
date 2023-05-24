@@ -94,10 +94,12 @@
             script{
             echo &apos;Static code analysis&apos;
             currentCheckstyleRulesStr = getCheckstyleRules(params.CHECKSTYLE_RULES_SET)
+            withMaven(maven: getMavenVersion(params.MAVEN_VERSION), publisherStrategy: &apos;EXPLICIT&apos;){
             sh &quot;echo ${currentCheckstyleRulesStr} \n\
             cd api\n\
-            mvn -B -ntp clean compile -P static-code-analysis ${currentCheckstyleRulesStr}\n\
+            mvn -B -ntp clean package -P static-code-analysis ${currentCheckstyleRulesStr}\n\
             echo \&quot;static code analysis finished\&quot;&quot;
+            }
             }
 
             echo &quot;Reading static analysis report&quot;

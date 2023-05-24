@@ -1,9 +1,15 @@
 ---
 - name: Converge
-  hosts: localhost
+  hosts: all
 
-  vars:
-    jenkins_port: 8085
-
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 600
+      become: true
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+      
 - name: Run main playbook
   import_playbook: ../../playbooks/create-job.yml

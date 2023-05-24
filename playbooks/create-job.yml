@@ -1,58 +1,88 @@
-- hosts: localhost
+- hosts: all
   become: true
-
-
   vars:
     ansible_python_interpreter: /usr/bin/python3.10
-    jenkins_host: 127.0.0.1
-    jenkins_port: 8085
-    jenkins_admin_user: admin
-    jenkins_admin_pass: admin
+    jenkins_prefer_lts: true
+    jenkins_http_port: 8085
+    jenkins_admin_username: admin
+    jenkins_admin_password: admin
     java_packages:
       - openjdk-17-jdk
     jenkins_maven_installations:
       - 3.8.4
       - 3.9.0
-    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
-    jenkins_job_name: spipeline0
+    jenkins_job_config: "{{ lookup('template', 'job-config-2.xml.j2') }}"
+    jenkins_multibranch_job_config: "{{ lookup('template', 'multibranch-pipeline-config.xml.j2') }}"
+    jenkins_job_name: pipeline-job
+    jenkins_multibranch_job_name: multi-pipeline-job
 
   pre_tasks:
-    - include_vars: plugins.yml
+    - include_vars: jenkins_plugins.yml
+      tags: always
+    - name: Set jenkins_repo_key_url
+      ansible.builtin.set_fact:
+        jenkins_repo_key_url: "https://pkg.jenkins.io/{{ ansible_os_family | lower }}{{ '-stable' if (jenkins_prefer_lts | bool) else '' }}/jenkins.io-2023.key"
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+      tags: always
 
   roles:
-    - {role: geerlingguy.jenkins, jenkins_hostname: "{{ jenkins_host }}", jenkins_http_port: "{{ jenkins_port }}", jenkins_admin_username: "{{ jenkins_admin_user }}", jenkins_admin_password: "{{ jenkins_admin_pass }}", jenkins_plugins: "{{ plugins }}"}
-    - {role: geerlingguy.java, become: yes, java_packages: openjdk-17-jdk}
-  tags: notest
+    - { role: geerlingguy.git, tags: always }
+    - { role: geerlingguy.java, tags: always }
+    - { role: geerlingguy.jenkins, tags: [ never, step1 ] }
+    - { role: geerlingguy.jenkins, tags: [ step2, step3, step4, step5, step6 ] }
 
   post_tasks:
+    - name: Install Python pip
+      package: 
+        name: python3-pip
+        state: present
+      become: true
+      tags: [ step3, step4, step5, step6 ]
+    - name: Install python-jenkins
+      ansible.builtin.pip:
+        name:
+          - python-jenkins==1.8.0
+          - urllib3<2.0.2
+      tags: [ step3, step4, step5, step6 ]
     - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
-        user: "{{ jenkins_admin_user }}"
-        password: "{{ jenkins_admin_pass}}"
-        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
+        user: "{{ jenkins_admin_username }}"
+        password: "{{ jenkins_admin_password }}"
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
         validate_certs: false
         timeout: 120
       with_items: jenkins_maven_installation
+      tags: [ step4, step5, step6 ]
     - name: Create Jenkins pipeline job
       community.general.jenkins_job:
         config: "{{ jenkins_job_config }}"
         name: "{{ jenkins_job_name }}"
-        user: "{{ jenkins_admin_user }}"
-        password: "{{ jenkins_admin_pass}}"
-        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
+        user: "{{ jenkins_admin_username }}"
+        password: "{{ jenkins_admin_password }}"
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
         validate_certs: false
+      tags: [ step5, step6 ]
+    - name: Trigger Jenkins build on pipeline job
+      command: >
+        java -jar {{ jenkins_jar_location }} -s  http://127.0.0.1:{{ jenkins_http_port }} -auth {{ jenkins_admin_username }}:{{ jenkins_admin_password }} build {{ jenkins_job_name }}
+      tags: [ step5, step6 ]
+    - name: Create Jenkins multibranch pipeline job
+      community.general.jenkins_job:
+        config: "{{ jenkins_multibranch_job_config }}"
+        name: "{{ jenkins_multibranch_job_name }}"
+        user: "{{ jenkins_admin_username }}"
+        password: "{{ jenkins_admin_password }}"
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
+        validate_certs: false
+      tags: [ step6 ]
     - name: Get Jenkins pipeline job status
       community.general.jenkins_job_info:
         name: "{{ jenkins_job_name }}"
-        user: "{{ jenkins_admin_user }}"
-        password: "{{ jenkins_admin_pass}}"
-        url: "http://{{ jenkins_host }}:{{ jenkins_port }}"
+        user: "{{ jenkins_admin_username }}"
+        password: "{{ jenkins_admin_password }}"
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
         validate_certs: false
       retries: 3
-    - name: Trigger Jenkins build
-      command: >
-        java -jar {{ jenkins_jar_location }} -s  http://{{ jenkins_host }}:{{ jenkins_port }} -auth {{ jenkins_admin_user }}:{{ jenkins_admin_pass }} build {{ jenkins_job_name }}
-
-
+      tags: [ step5, step6 ]
