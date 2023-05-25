@@ -58,14 +58,27 @@
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   cd $HOME/awesome-jenkins
   ```
+### 2. Installing 'Jenkins' on the remote host
 
-### 2. Install ansible roles for [Java](https://github.com/geerlingguy/ansible-role-java/), [Git](https://github.com/geerlingguy/ansible-role-git/), and [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) using commands:
+* Copy `./inventory/example` to `./inventory/my-jenkins` folder.
+  
+  ```
+  cp -r ./inventory/example ./inventory/my-jenkins
+  ```
+
+* Change the variables in the files `./inventory/my-jenkins/hosts.yml` as you need
+
+![](./images/hosts.png)
+
+* Installing "Jenkins" on localhost does not require any changes to `./inventory/localhost/hosts.yml` file.
+
+### 3. Install ansible roles for [Java](https://github.com/geerlingguy/ansible-role-java/), [Git](https://github.com/geerlingguy/ansible-role-git/), and [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) using commands:
    
    ```
    ansible-galaxy install -r ./requirements.yml
    ```
 
-### 3. Run ansible playbook 
+### 4. Run ansible playbook 
 
   This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 7 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5` and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, e.g. if you run playbook with `step3` tag, tasks tagged with `always`, `step1`, `step2` and `step3` will be run.
 
@@ -125,7 +138,7 @@
    ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step6
    ```
 
-### 4. Check `Jenkins`
+### 5. Check `Jenkins`
 
 1. Go to the host specified in the `inventory/localhost/hosts.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
 2. Login to Jenkins using the credentials.
