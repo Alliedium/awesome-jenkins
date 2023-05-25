@@ -3,6 +3,10 @@
 # Prerequisites
 * Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
 
+* Use `./inventory/localhost/hosts.yaml` if you are installing the `Jenkins` on the same host where `Ansible` is running.  Use `./inventory/example/hosts.yaml` if you are installing the `Jenkins` on the remote host.
+  
+  In our examples, we use `./inventory/localhost/hosts.yaml` file.
+
 * Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 
 * [Install `molecule`](https://molecule.readthedocs.io/installation/) on `Ubuntu` Linux. Molecule project is designed to aid in the development and testing of Ansible roles.
@@ -68,13 +72,13 @@
    1. Before running tasks, check the list of tasks that will be executed using `--list-tasks` flag
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory --list-tasks
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost --list-tasks
    ```
 
    You will receive a list of all tasks. Using `-t step2` when getting a list of tasks.
 
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step2 --list-tasks
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step2 --list-tasks
    ```
 
    You will receive a list of tasks, tagged `always`, `step1` and `step2`.
@@ -83,47 +87,47 @@
    2. Run all the available tasks from `playbook.yml` playbook. 
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost
    ```
    3. Run without installing any plugins in `Jenkins`:
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step1
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step1
    ```
 
    4. Run with installing [plugins](ListofJenkinsPluginsToBeInstalled.md) in `Jenkins`:
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step2
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step2
    ```
 
    5. Use `step3` tag - install `python-jenkins`
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step3
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step3
    ```
 
    6. `step4` - Add  `maven` tool
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step4
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step4
    ```
 
    7. `step5` - Create and launch  `Jenkins pipeline job`
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step5
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step5
    ```
    
    8. `step6 - Create and launch  `Jenkins multibranch pipeline job`
    
    ```
-   ansible-playbook ./playbooks/create-job.yml -i ./inventory -t step6
+   ansible-playbook ./playbooks/create-job.yml -i ./inventory/localhost -t step6
    ```
 
 ### 4. Check `Jenkins`
 
-1. Go to the host specified in the `inventory/hosts.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
+1. Go to the host specified in the `inventory/localhost/hosts.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
 2. Login to Jenkins using the credentials.
 3. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
