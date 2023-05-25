@@ -146,6 +146,12 @@
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
 5. Pull requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
 
+### 5. Test Ansible playbook locally
+
+```
+molecule test
+```
+
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
