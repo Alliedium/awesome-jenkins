@@ -58,7 +58,7 @@
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   cd $HOME/awesome-jenkins
   ```
-### 2. Installing 'Jenkins' on the remote host
+### 2. Installing 'Jenkins' on remote host
 
 * Copy `./inventory/example` to `./inventory/my-jenkins` folder.
   
