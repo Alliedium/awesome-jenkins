@@ -2,7 +2,10 @@
 
 # Prerequisites
 * Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+
 * Use `./inventory/localhost/hosts.yaml` if you are installing the `Jenkins` on the same host where `Ansible` is running.  Use `./inventory/example/hosts.yaml` if you are installing the `Jenkins` on the remote host.
+  
+  In our examples, we use `./inventory/localhost/hosts.yaml` file.
 
 * Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 
