@@ -15,7 +15,6 @@
         password: "admin"
         url: "http://127.0.0.1:8085"
         validate_certs: false
-#      delegate_to: 127.0.0.1
       retries: 15
       delay: 30
       register: jenkins_job_info
