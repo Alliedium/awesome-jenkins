@@ -201,6 +201,16 @@ molecule destroy
 
 This removes the containers that we deployed and provisioned with create or converge. Putting us into a great place to start again.
 
+### 6. Ansible playbook remote testing with github Actions
+
+The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `github` Actions testing.
+
+After creating or updating a pull request, tests are launched on the `github` server and the results can be viewed here
+
+![github_actions](./images/github_actions.png)
+
+![github_actions_1](./images/github_actions_1.png)
+
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
