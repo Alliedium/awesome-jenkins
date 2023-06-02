@@ -9,8 +9,9 @@ jenkins_plugins:
   - git-client
   - github
   - github-api
+  - disable-github-multibranch-status
   - github-client
-  - github-branch-source
+  - github-checks
   - htmlpublisher
   - junit
   - maven-plugin

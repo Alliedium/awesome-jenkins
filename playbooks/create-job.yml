@@ -16,6 +16,8 @@
     jenkins_multibranch_job_config: "{{ lookup('template', 'multibranch-pipeline-config.xml.j2') }}"
     jenkins_job_name: pipeline-job
     jenkins_multibranch_job_name: multi-pipeline-job
+    multibranch_repository_url:
+      - "https://github.com/Alliedium-demo-test/springboot-api-rest-example.git"
 
   pre_tasks:
     - include_vars: jenkins_plugins.yml
@@ -76,6 +78,7 @@
         password: "{{ jenkins_admin_password }}"
         url: "http://127.0.0.1:{{ jenkins_http_port }}"
         validate_certs: false
+      with_items: multibranch_repository_url
       tags: [ step6 ]
     - name: Get Jenkins pipeline job status
       community.general.jenkins_job_info:
