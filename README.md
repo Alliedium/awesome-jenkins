@@ -211,6 +211,63 @@ After creating or updating a pull request, tests are launched on the `github` se
 
 ![github_actions_1](./images/github_actions_1.png)
 
+## Jenkins and `github` integration
+
+### 1. Make sure the `GitHub Checks` plugin and its dependent plugins are installed
+
+![plugins](./images/plugins.png)
+
+### 2. Set Resource Root URL
+
+![resource_root_url](./images/resource_root_url.png)
+
+### 3. Creating your organization in `github`
+  
+  ![creating_org_1](./images/creating_org_1.png)
+
+  ![creating_org_2](./images/creating_org_2.png)
+
+### 4. Creating `github apps`
+
+![github_app](./images/github_app.png)
+
+### 5. Generate and download SSH key
+
+![](./images/ssh_key.png)
+
+### 5. Install your app for repositories
+
+![install_app](./images/install_app.png)
+
+### 6. Convert your generated key
+
+```
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
+```
+
+`key-in-your-downloads-folder.pem` - your generated SSH key
+
+`converted-github-app.pem` - converted key
+
+### 4. Fork your repo for testing purposes on `github`
+
+  ![fork](./images/fork.png)
+
+### 5. Make sure the plugin and its dependent plugins are installed in `Jenkins`
+
+### 6. Create `multibranch pipeline` in `Jenkins`
+
+![mpipeline](./images/mpipeline.png)
+
+![mp_config](./images/mp_config_1.png)
+
+### 7. On `github` create new branch and pull request
+
+After creating new pull request on `Jenkins` scan repository
+
+![scan_repository](./images/scan_repository.png)
+
+
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
