@@ -265,6 +265,10 @@ After creating new pull request on `Jenkins` scan repository
 
 ![scan_repository](./images/scan_repository.png)
 
+### 11. Run you build
+
+![run_pr](./images/run_pr.png)
+
 
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
