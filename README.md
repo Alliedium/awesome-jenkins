@@ -213,7 +213,7 @@ After creating or updating a pull request, tests are launched on the `github` se
 
 ## Jenkins and `github` integration
 
-### 1. Make sure the `GitHub Checks` plugin and its dependent plugins are installed
+### 1. Make sure the `GitHub Checks` plugin and its dependent plugins are installed on `Jenkins`
 
 ![plugins](./images/plugins.png)
 
@@ -235,11 +235,11 @@ After creating or updating a pull request, tests are launched on the `github` se
 
 ![](./images/ssh_key.png)
 
-### 5. Install your app for repositories
+### 6. Install your app for repositories
 
 ![install_app](./images/install_app.png)
 
-### 6. Convert your generated key
+### 7. Convert your generated key
 
 ```
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
@@ -249,19 +249,17 @@ openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.p
 
 `converted-github-app.pem` - converted key
 
-### 4. Fork your repo for testing purposes on `github`
+### 8. Fork your repo for testing purposes on `github`
 
   ![fork](./images/fork.png)
 
-### 5. Make sure the plugin and its dependent plugins are installed in `Jenkins`
-
-### 6. Create `multibranch pipeline` in `Jenkins`
+### 9. Create `multibranch pipeline` in `Jenkins`
 
 ![mpipeline](./images/mpipeline.png)
 
 ![mp_config](./images/mp_config_1.png)
 
-### 7. On `github` create new branch and pull request
+### 10. On `github` create new branch and pull request
 
 After creating new pull request on `Jenkins` scan repository
 
