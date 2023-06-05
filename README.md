@@ -257,7 +257,7 @@ openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.p
 
 ![mpipeline](./images/mpipeline.png)
 
-![mp_config](./images/mp_config_1.png)
+![mp_config](./images/mp_config_2.png)
 
 ### 10. On `github` create new branch and pull request
 
@@ -269,6 +269,9 @@ After creating new pull request on `Jenkins` scan repository
 
 ![run_pr](./images/run_pr.png)
 
+### 12. See build result on `github`
+
+![github_checks](./images/github_checks.png)
 
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
