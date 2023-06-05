@@ -20,13 +20,13 @@
 
 ## Playbook variables used in Jenkins server installation:
 
-1. The HTTP port for Jenkins' web interface:
+1. The HTTP port for `Jenkins` web interface:
 
    ```
    jenkins_http_port: 8085
    ```
 
-2. Admin account credentials which will be created the first time Jenkins is installed:
+2. Admin account credentials which will be created the first time `Jenkins` is installed:
 
    ```
    jenkins_admin_username: admin
@@ -57,7 +57,7 @@
   ```
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   ```
-### 2. Installing 'Jenkins' on remote host
+### 2. Installing `Jenkins` on remote host
 
 * Copy `$HOME/awesome-jenkins/inventory/example` to `$HOME/awesome-jenkins/inventory/my-jenkins` folder.
   
@@ -131,7 +131,7 @@
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step5
    ```
    
-   8. `step6 - Create and launch  `Jenkins multibranch pipeline job`
+   8. `step6 - Create and launch` Jenkins multibranch pipeline job`
    
    ```
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step6
@@ -139,9 +139,9 @@
 
 ### 5. Check `Jenkins`
 
-1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open browser and check that Jenkins is available at http://localhost:8085/.
-2. Login to Jenkins using the credentials.
-3. You will see Jenkins dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
+1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open browser and check that `Jenkins` is available at http://localhost:8085/.
+2. Login to `Jenkins` using the credentials.
+3. You will see `Jenkins` dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
 5. Pull requests will be run for the multibranch pipeline job.![multibranch_pipeline.png](./images/03jenkins_mpipeline.png)
 
@@ -201,45 +201,41 @@ molecule destroy
 
 This removes the containers that we deployed and provisioned with create or converge. Putting us into a great place to start again.
 
-### 6. Ansible playbook remote testing with github Actions
+### 6. Ansible playbook remote testing with GitHub Actions
 
-The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `github` Actions testing.
+The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `GitHub` Actions testing.
 
-After creating or updating a pull request, tests are launched on the `github` server and the results can be viewed here
+After creating or updating a pull request, tests are launched on the `GitHub` server and the results can be viewed here
 
 ![github_actions](./images/github_actions.png)
 
 ![github_actions_1](./images/github_actions_1.png)
 
-## Jenkins and `github` integration
+## `Jenkins` and `GitHub` integration
 
-### 1. Make sure the `GitHub Checks` plugin and its dependent plugins are installed on `Jenkins`
-
-![plugins](./images/plugins.png)
-
-### 2. Set Resource Root URL
+### 1. Set Resource Root URL
 
 ![resource_root_url](./images/resource_root_url.png)
 
-### 3. Creating your organization in `github`
+### 2. Creating your organization in `GitHub`
   
   ![creating_org_1](./images/creating_org_1.png)
 
   ![creating_org_2](./images/creating_org_2.png)
 
-### 4. Creating `github apps`
+### 3. Creating `GitHub apps`
 
 ![github_app](./images/github_app.png)
 
-### 5. Generate and download SSH key
+### 4. Generate and download SSH key
 
 ![](./images/ssh_key.png)
 
-### 6. Install your app for repositories
+### 5. Install your app for repositories
 
 ![install_app](./images/install_app.png)
 
-### 7. Convert your generated key
+### 6. Convert your generated key
 
 ```
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
@@ -249,27 +245,27 @@ openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.p
 
 `converted-github-app.pem` - converted key
 
-### 8. Fork your repo for testing purposes on `github`
+### 7. Fork your repo for testing purposes on `GitHub`
 
   ![fork](./images/fork.png)
 
-### 9. Create `multibranch pipeline` in `Jenkins`
+### 8. Create `multibranch pipeline` in `Jenkins`
 
 ![mpipeline](./images/mpipeline.png)
 
-![mp_config](./images/mp_config_2.png)
+![mp_config](./images/mp_config_3.png)
 
-### 10. On `github` create new branch and pull request
+### 9. On `GitHub` create new branch and pull request
 
 After creating new pull request on `Jenkins` scan repository
 
 ![scan_repository](./images/scan_repository.png)
 
-### 11. Run you build
+### 10. Run your build
 
 ![run_pr](./images/run_pr.png)
 
-### 12. See build result on `github`
+### 11. See build result on `GitHub`
 
 ![github_checks](./images/github_checks.png)
 
