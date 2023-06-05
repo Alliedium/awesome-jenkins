@@ -33,9 +33,8 @@
                 <source class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@1701.v00cc8184df93">
                     <id>0f116140-3d05-479a-a133-c0174719202f</id>
                     <apiUri>https://api.github.com</apiUri>
-                    <repoOwner>Alliedium</repoOwner>
                     <repository>springboot-api-rest-example</repository>
-                    <repositoryUrl>https://github.com/Alliedium/springboot-api-rest-example.git</repositoryUrl>
+                    <repositoryUrl>{{ multibranch_repository_url }}</repositoryUrl>
                     <traits>
                         <org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
                             <strategyId>3</strategyId>
