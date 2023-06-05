@@ -5,11 +5,11 @@ jenkins_plugins:
   - credentials
   - checks-api
   - echarts-api
+  - disable-github-multibranch-status
   - git
   - git-client
   - github
   - github-api
-  - disable-github-multibranch-status
   - github-client
   - github-checks
   - htmlpublisher

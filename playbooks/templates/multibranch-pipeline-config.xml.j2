@@ -34,9 +34,7 @@
                     <id>0f116140-3d05-479a-a133-c0174719202f</id>
                     <apiUri>https://api.github.com</apiUri>
                     <repository>springboot-api-rest-example</repository>
-                    {% for url in multibranch_repository_url %}
-                    <repositoryUrl>{{ url }}</repositoryUrl>
-                    {% endfor %}
+                    <repositoryUrl>{{ multibranch_repository_url }}</repositoryUrl>
                     <traits>
                         <org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
                             <strategyId>3</strategyId>
