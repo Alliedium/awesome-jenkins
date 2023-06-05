@@ -51,7 +51,7 @@
         script: "{{ jenkins_maven_template }}"
         user: "{{ jenkins_admin_username }}"
         password: "{{ jenkins_admin_password }}"
-        url: "http://127.0.0.1:{{ jenkins_http_port }}"
+        url: "http://localhost:{{ jenkins_http_port }}"
         validate_certs: false
         timeout: 120
       with_items: jenkins_maven_installation
