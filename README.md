@@ -201,6 +201,78 @@ molecule destroy
 
 This removes the containers that we deployed and provisioned with create or converge. Putting us into a great place to start again.
 
+### 6. Ansible playbook remote testing with github Actions
+
+The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `github` Actions testing.
+
+After creating or updating a pull request, tests are launched on the `github` server and the results can be viewed here
+
+![github_actions](./images/github_actions.png)
+
+![github_actions_1](./images/github_actions_1.png)
+
+## Jenkins and `github` integration
+
+### 1. Make sure the `GitHub Checks` plugin and its dependent plugins are installed on `Jenkins`
+
+![plugins](./images/plugins.png)
+
+### 2. Set Resource Root URL
+
+![resource_root_url](./images/resource_root_url.png)
+
+### 3. Creating your organization in `github`
+  
+  ![creating_org_1](./images/creating_org_1.png)
+
+  ![creating_org_2](./images/creating_org_2.png)
+
+### 4. Creating `github apps`
+
+![github_app](./images/github_app.png)
+
+### 5. Generate and download SSH key
+
+![](./images/ssh_key.png)
+
+### 6. Install your app for repositories
+
+![install_app](./images/install_app.png)
+
+### 7. Convert your generated key
+
+```
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
+```
+
+`key-in-your-downloads-folder.pem` - your generated SSH key
+
+`converted-github-app.pem` - converted key
+
+### 8. Fork your repo for testing purposes on `github`
+
+  ![fork](./images/fork.png)
+
+### 9. Create `multibranch pipeline` in `Jenkins`
+
+![mpipeline](./images/mpipeline.png)
+
+![mp_config](./images/mp_config_2.png)
+
+### 10. On `github` create new branch and pull request
+
+After creating new pull request on `Jenkins` scan repository
+
+![scan_repository](./images/scan_repository.png)
+
+### 11. Run you build
+
+![run_pr](./images/run_pr.png)
+
+### 12. See build result on `github`
+
+![github_checks](./images/github_checks.png)
+
 ## Project:
    As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
