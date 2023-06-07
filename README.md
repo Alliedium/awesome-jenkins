@@ -301,10 +301,6 @@ After creating new pull request on `Jenkins` scan repository
    ```
    sudo dnf install git
    ```
-3. Install maven
-   ```
-   sudo dnf install maven
-   ```
 4. Install java 17 and make it default
    ```
    sudo dnf install java-17-openjdk java-17-openjdk-devel
@@ -364,6 +360,37 @@ After creating new pull request on `Jenkins` scan repository
 
   ![Disable builtin node2](./images/009disable_builtin_node2.png)
 
+### Debug GitHub Actions with mxschmitt/action-tmate@v3.11
+1. Install tmate on your host machine
+   ```
+   sudo apt install tmate
+   ```
+2. Add `xschmitt/action-tmate` steps to your job in GitHub Action workflow by adding following lines
+    ```
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3.11
+    ```
+3. In our project we added one scenario `tmate-ci.yaml` with `tmate` session duration `10` minutes
+      ```
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3.11
+        timeout-minutes: 10
+      ```
+   and another `ci-to-fail.yaml` with `tmate` session is triggered by previous failure
+
+      ```
+       - name: Setup tmate session
+         if: ${{ failure() }}
+         uses: mxschmitt/action-tmate@v3.11
+      ```
+4. To enter `tmate` session use provided url or run ssh command:
+  ![tmate session](./images/010tmate_exec.png)
+5. You can use shell to install/uninstall apps, investigate your workspace and run commands
+
+6. To exit from `tmate` session and continue run your workflow create file with name `continue` in your `tmate` terminal, for example by using command:
+    ```
+    touch continue
+    ```
 ## Nektos Act
 ### Install Nektos Act on Ubuntu Jammy
    ```
