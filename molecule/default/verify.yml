@@ -8,7 +8,7 @@
         status_code:
           - 200
           - 403
-    - name: Check pipeline job is state
+    - name: Check pipeline job state
       community.general.jenkins_job_info:
         name: "pipeline-job"
         user: "admin"
