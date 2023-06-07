@@ -14,6 +14,7 @@ jenkins_plugins:
   - github-checks
   - htmlpublisher
   - junit
+  - matrix-auth
   - maven-plugin
   - pipeline
   - pipeline-groovy
@@ -22,6 +23,9 @@ jenkins_plugins:
   - pipeline-stage-step
   - pipeline-stage-view
   - scm-api
+  - ssh-credentials
+  - ssh-slaves
+  - sshd
   - warnings-ng
   - workflow-api
   - workspace-cleanup

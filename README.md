@@ -294,6 +294,76 @@ After creating new pull request on `Jenkins` scan repository
 3. Navigate to Actions and enable them if needed. ![enable_github_actions.png](./images/04gha_enable.png)
 4. The existing workflows can be run manually by following steps marked with the numbers 1-4 from the Figure below or triggered by pull request, see marks 5-7. ![run_existing_gha_wfs.png](./images/05gha_run_existing_workflow.png)-
 
+## Create Jenkins node on VM
+### Prerequisite: 
+1. [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
+2. Install git
+   ```
+   sudo dnf install git
+   ```
+3. Install maven
+   ```
+   sudo dnf install maven
+   ```
+4. Install java 17 and make it default
+   ```
+   sudo dnf install java-17-openjdk java-17-openjdk-devel
+   java -version
+   alternatives --list
+   sudo alternatives --config java
+   java -version
+   ```
+5. Create directory for Jenkins on your VM
+   ```
+   mkdir 'remote_root_dir'
+   ```
+
+### Do on your Jenkins controller machine
+1. Navigate to
+    ```
+    cd /var/lib/jenkins
+   ```
+2. Create directory
+   ```
+   mkdir ./ssh
+   ```
+3. Change its owner
+   ```
+    sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
+   ```
+4. Create file
+   ```
+    sudo touch known_hosts
+   ```
+5. Add VM to the known hosts
+   ```
+   sudo ssh-keyscan host <your_vm_ip> >> /var/lib/jenkins/.ssh/known_hosts
+   ```
+6. Go to your Jenkins. Open Manage Jenkins> Nodes 
+  ![add node](./images/004add_node.png)
+
+7. Configure your slave-node:
+
+  Write `Name` (1), indicate `Number of runners` (2), `Remote root directory` should be the same as in the p.5 (3), add `Labels` that will trigger your agent (4); select type of `Usage` (5); choose launch method via SSH
+   
+  ![configure 1](./images/005configure_node1.png)
+
+  Indicate IP address of your VM machine and add credentials for it; set `Host Key Verification Strategy` to `Known hosts file verification strategy`
+
+  ![configure 2](./images/006configure_node2.png)
+  
+  Go to Advanced settings and set path to your JVM:
+
+  ![configure 3](./images/007configure_node3.png)
+
+8. Disable agent on your Jenkins controller
+
+  ![Disable builtin node1](./images/008disable_builtin_node1.png)
+  
+  Set number of runners to 0, write labels that is not easy to guess and choose `Usage` as `Only build jobs with label expressions matching this node`
+
+  ![Disable builtin node2](./images/009disable_builtin_node2.png)
+
 ## Nektos Act
 ### Install Nektos Act on Ubuntu Jammy
    ```
@@ -369,11 +439,17 @@ After creating new pull request on `Jenkins` scan repository
 46. [Manage protected branches on GitHub](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
 47. [Setup GitHub checks in Jenkinsfile](https://github.com/jenkinsci/checks-api-plugin/blob/master/docs/consumers-guide.md)
 
+### Jenkins nodes
+48. [How to configure Jenkins master and slave nodes](https://digitalvarys.com/how-to-configure-jenkins-master-slave-setup/)
+49. [Jenkins ssh-slaves plugin](https://plugins.jenkins.io/ssh-slaves/)
+50. [Managing Jenkins nodes](https://www.jenkins.io/doc/book/managing/nodes/)
+51. [Video: Jenkins node setup](https://www.youtube.com/watch?v=99DddJiH7lM)
+
 ### GitHub Actions
-48. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
-49. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
+52. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
+53. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
 
 ### Act
-50. [Act](https://github.com/nektos/act)
-51. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
-52. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
+54. [Act](https://github.com/nektos/act)
+55. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
+56. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
