@@ -1,5 +1,5 @@
 ---
-name: tmate-ci
+name: CI to fail
 'on':
   pull_request:
   workflow_dispatch:
@@ -21,12 +21,14 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install test dependencies
-        run: pip3 install ansible molecule molecule-plugins[docker] docker
-
-      - name: Change directory
-        run: cd ${{ github.repository }}
+      - name: Run Molecule tests
+        run: cd ${{ github.repository }} && molecule test
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: 'ubuntu2204'
 
       - name: Setup tmate session
+        if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3.11
         timeout-minutes: 15
