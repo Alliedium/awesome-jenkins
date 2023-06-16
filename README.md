@@ -301,11 +301,8 @@ After creating new pull request on `Jenkins` scan repository
    ```
    sudo dnf install git
    ```
-3. Install maven
-   ```
-   sudo dnf install maven
-   ```
-4. Install java 17 and make it default
+
+3. Install java 17 and make it default
    ```
    sudo dnf install java-17-openjdk java-17-openjdk-devel
    java -version
@@ -313,9 +310,9 @@ After creating new pull request on `Jenkins` scan repository
    sudo alternatives --config java
    java -version
    ```
-5. Create directory for Jenkins on your VM
+4. Create directory for Jenkins on your VM
    ```
-   mkdir 'remote_root_dir'
+   mkdir <remote_root_dir>
    ```
 
 ### Do on your Jenkins controller machine
@@ -331,38 +328,51 @@ After creating new pull request on `Jenkins` scan repository
    ```
     sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
    ```
-4. Create file
+4. Change user to `jenkins`
    ```
-    sudo touch known_hosts
+   sudo su jenkins
    ```
-5. Add VM to the known hosts
+5. Create file `known_hosts`
    ```
-   sudo ssh-keyscan host <your_vm_ip> >> /var/lib/jenkins/.ssh/known_hosts
+   touch ./.ssh/known_hosts
    ```
-6. Go to your Jenkins. Open Manage Jenkins> Nodes 
-  ![add node](./images/004add_node.png)
+6. Add VM to the `known_hosts`
+   ```
+   ssh-keyscan host <your_vm_ip> >> /var/lib/jenkins/.ssh/known_hosts
+   ```
+7. Go to your Jenkins. Open Manage Jenkins => Nodes 
 
-7. Configure your slave-node:
+![add node](./images/004add_node.png)
+
+8. Configure your slave-node:
 
   Write `Name` (1), indicate `Number of runners` (2), `Remote root directory` should be the same as in the p.5 (3), add `Labels` that will trigger your agent (4); select type of `Usage` (5); choose launch method via SSH
-   
-  ![configure 1](./images/005configure_node1.png)
+
+![configure 1](./images/005configure_node1.png)
+
+  Create credentials. Choose kind `SSH Username with private key`. Use username from your VM machine.
+
+![create credentials](./images/0045credentials1.png)
+  
+  Enter directly private key from your VM. Use key for ssh access generated on VM creation. 
+
+![create credentials2](./images/0046credentials2.png)
 
   Indicate IP address of your VM machine and add credentials for it; set `Host Key Verification Strategy` to `Known hosts file verification strategy`
 
-  ![configure 2](./images/006configure_node2.png)
+![configure 2](./images/006configure_node2.png)
   
   Go to Advanced settings and set path to your JVM:
 
-  ![configure 3](./images/007configure_node3.png)
+![configure 3](./images/007configure_node3.png)
 
 8. Disable agent on your Jenkins controller
 
-  ![Disable builtin node1](./images/008disable_builtin_node1.png)
+![Disable builtin node1](./images/008disable_builtin_node1.png)
   
-  Set number of runners to 0, write labels that is not easy to guess and choose `Usage` as `Only build jobs with label expressions matching this node`
+  Set number of runners to `0`
 
-  ![Disable builtin node2](./images/009disable_builtin_node2.png)
+![Disable builtin node2](./images/009disable_builtin_node2.png)
 
 ## Nektos Act
 ### Install Nektos Act on Ubuntu Jammy
@@ -431,7 +441,7 @@ After creating new pull request on `Jenkins` scan repository
 40. [Jacoco examples](https://www.baeldung.com/jacoco)
 41. [Code coverage reports publisher on Jenkins](https://plugins.jenkins.io/htmlpublisher/)
 
-### Jenkins and GitHub integration
+#### Jenkins and GitHub integration
 42. [GitHub checks Jenkins plugin](https://plugins.jenkins.io/github-checks/)
 43. [Disable GitHub multibranch status Jenkins plugin](https://plugins.jenkins.io/disable-github-multibranch-status/)
 44. [How to integrate Jenkins with GitHub](https://docs.cloudbees.com/docs/cloudbees-ci/latest/cloud-admin-guide/github-app-auth)
@@ -439,17 +449,23 @@ After creating new pull request on `Jenkins` scan repository
 46. [Manage protected branches on GitHub](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
 47. [Setup GitHub checks in Jenkinsfile](https://github.com/jenkinsci/checks-api-plugin/blob/master/docs/consumers-guide.md)
 
-### Jenkins nodes
+#### Jenkins nodes
 48. [How to configure Jenkins master and slave nodes](https://digitalvarys.com/how-to-configure-jenkins-master-slave-setup/)
 49. [Jenkins ssh-slaves plugin](https://plugins.jenkins.io/ssh-slaves/)
 50. [Managing Jenkins nodes](https://www.jenkins.io/doc/book/managing/nodes/)
 51. [Video: Jenkins node setup](https://www.youtube.com/watch?v=99DddJiH7lM)
 
-### GitHub Actions
-52. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
-53. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
+#### Manage Jenkins users
+52. [Matrix authorization strategy Jenkins plugin](https://plugins.jenkins.io/matrix-auth/)
+53. [Role strategy Jenkins plugin](https://plugins.jenkins.io/role-strategy/)
+54. [Login to Jenkins using your own, self-hosted or public openid connect server](https://plugins.jenkins.io/oic-auth/)
+55. [How to reset Jenkins admin password](https://tecadmin.net/reset-jenkins-admin-password/)
 
-### Act
-54. [Act](https://github.com/nektos/act)
-55. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
-56. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
+#### GitHub Actions
+56. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
+57. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
+
+#### Act
+58. [Act](https://github.com/nektos/act)
+59. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
+60. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
