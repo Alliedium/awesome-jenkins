@@ -310,9 +310,9 @@ After creating new pull request on `Jenkins` scan repository
    sudo alternatives --config java
    java -version
    ```
-4. Create directory for Jenkins on your VM
+4. Create directory <agent_jenkins_dir> for Jenkins on your VM. In this direcotry the Jenkins assosiated files (settings, jobs) will be stored.
    ```
-   mkdir <remote_root_dir>
+   mkdir <agent_jenkins_dir>
    ```
 
 ### Do on your Jenkins controller machine
@@ -344,7 +344,7 @@ After creating new pull request on `Jenkins` scan repository
 
 ![add node](./images/004add_node.png)
 
-8. Configure your slave-node:
+8. Configure your Jenkins agent-node:
 
   Write `Name` (1), indicate `Number of runners` (2), `Remote root directory` should be the same as in the p.5 (3), add `Labels` that will trigger your agent (4); select type of `Usage` (5); choose launch method via SSH
 
