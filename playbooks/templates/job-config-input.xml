@@ -1,0 +1,42 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1308.v58d48a_763b_31">
+    <actions>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2133.ve46a_6113dfc3"/>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2133.ve46a_6113dfc3">
+            <jobProperties/>
+            <triggers/>
+            <parameters/>
+            <options/>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+    </actions>
+    <description></description>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3691.v28b_14c465a_b_b_">
+        <script>pipeline {
+            agent none
+            stages {
+            stage(&apos;input&apos;) {
+            agent any
+            input {
+            message &quot;What is your first name?&quot;
+            ok &quot;Submit&quot;
+            parameters {
+            string(defaultValue: &apos;Dave&apos;, name: &apos;FIRST_NAME&apos;, trim: true)
+            }
+            }
+            steps {
+            echo &quot;Good Morning, $FIRST_NAME&quot;
+            sh &apos;&apos;&apos;
+            hostname
+            cat /etc/redhat-release
+            &apos;&apos;&apos;
+            }
+            }
+            }
+            }</script>
+        <sandbox>true</sandbox>
+    </definition>
+    <triggers/>
+    <disabled>false</disabled>
+</flow-definition>
