@@ -14,8 +14,10 @@
     jenkins_maven_template: "{{ lookup('template', 'maven-install.groovy.j2') }}"
     jenkins_job_config: "{{ lookup('template', 'job-config.xml.j2') }}"
     jenkins_multibranch_job_config: "{{ lookup('template', 'multibranch-pipeline-config.xml.j2') }}"
+    jenkins_job_input_config: "{{ lookup('file', 'templates/job-config-input.xml') }}"
     jenkins_job_name: pipeline-job
     jenkins_multibranch_job_name: multi-pipeline-job
+    jenkins_job_input_name: pipeline-input-job
     multibranch_repository_url: "https://github.com/Alliedium-demo-test/springboot-api-rest-example.git"
 
   pre_tasks:
@@ -31,7 +33,7 @@
     - { role: geerlingguy.git, tags: always }
     - { role: geerlingguy.java, tags: always }
     - { role: geerlingguy.jenkins, tags: [ never, step1 ] }
-    - { role: geerlingguy.jenkins, tags: [ step2, step3, step4, step5, step6 ] }
+    - { role: geerlingguy.jenkins, tags: [ step2, step3, step4, step5, step6, step7 ] }
 
   post_tasks:
     - name: Install Python pip
@@ -39,13 +41,13 @@
         name: python3-pip
         state: present
       become: true
-      tags: [ step3, step4, step5, step6 ]
+      tags: [ step3, step4, step5, step6, step7 ]
     - name: Install python-jenkins
       ansible.builtin.pip:
         name:
           - python-jenkins==1.8.0
           - urllib3<2.0.2
-      tags: [ step3, step4, step5, step6 ]
+      tags: [ step3, step4, step5, step6, step7 ]
     - name: Add maven to Jenkins
       community.general.jenkins_script:
         script: "{{ jenkins_maven_template }}"
@@ -87,3 +89,12 @@
         validate_certs: false
       retries: 3
       tags: [ step5, step6 ]
+    - name: Create Jenkins pipeline input job
+      community.general.jenkins_job:
+        config: "{{ jenkins_job_input_config }}"
+        name: "{{ jenkins_job_input_name }}"
+        user: "{{ jenkins_admin_username }}"
+        password: "{{ jenkins_admin_password }}"
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
+        validate_certs: false
+      tags: [ step5, step6, step7 ]

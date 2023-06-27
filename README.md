@@ -138,7 +138,7 @@
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step5
    ```
    
-   8. `step6 - Create and launch` Jenkins multibranch pipeline job`
+   8. `step6` - Create and launch `Jenkins multibranch pipeline job`
    
    ```
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step6
@@ -296,13 +296,18 @@ After creating new pull request on `Jenkins` scan repository
 
 ## Create Jenkins node on VM
 ### Prerequisite: 
-1. [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
-2. Install git
+  [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
+  Connect to your VM via ssh and enter password
+   ```
+   ssh <username>@<vm_ip_address>
+   ```
+###   Next steps should be executed on your VM machine
+1. Install git
    ```
    sudo dnf install git
    ```
 
-3. Install java 17 and make it default
+2. Install java 17 and make it default
    ```
    sudo dnf install java-17-openjdk java-17-openjdk-devel
    java -version
@@ -310,14 +315,14 @@ After creating new pull request on `Jenkins` scan repository
    sudo alternatives --config java
    java -version
    ```
-4. Create directory for Jenkins on your VM
+3. Create directory <agent_jenkins_dir> for Jenkins on your VM. In this directory the Jenkins associated files (settings, jobs) will be stored.
    ```
-   mkdir <remote_root_dir>
+   mkdir <agent_jenkins_dir>
    ```
 
 ### Do on your Jenkins controller machine
 1. Navigate to
-    ```
+   ```
     cd /var/lib/jenkins
    ```
 2. Create directory
@@ -326,7 +331,7 @@ After creating new pull request on `Jenkins` scan repository
    ```
 3. Change its owner
    ```
-    sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
+   sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
    ```
 4. Change user to `jenkins`
    ```
@@ -344,7 +349,7 @@ After creating new pull request on `Jenkins` scan repository
 
 ![add node](./images/004add_node.png)
 
-8. Configure your slave-node:
+8. Configure your Jenkins agent-node:
 
   Write `Name` (1), indicate `Number of runners` (2), `Remote root directory` should be the same as in the p.5 (3), add `Labels` that will trigger your agent (4); select type of `Usage` (5); choose launch method via SSH
 
@@ -366,7 +371,7 @@ After creating new pull request on `Jenkins` scan repository
 
 ![configure 3](./images/007configure_node3.png)
 
-8. Disable agent on your Jenkins controller
+9. Disable agent on your Jenkins controller
 
 ![Disable builtin node1](./images/008disable_builtin_node1.png)
   
@@ -374,12 +379,60 @@ After creating new pull request on `Jenkins` scan repository
 
 ![Disable builtin node2](./images/009disable_builtin_node2.png)
 
+#### Create Jenkins input job
+
+1. On your host machine go to the directory with `awesome-jenkins` project
+
+   ```
+   cd $HOME/awesome-jenkins
+   ```
+
+2. Run `step7` from ansible playbook - Create and launch `Jenkins pipeline input job`.  
+
+   ```
+   ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
+   ```
+3. Open Jenkins in your browser: `127.0.0.1:8085`
+4. Go to the `pipeline-input-job` and run the build. It will stop after some seconds.
+5. Connect to your VM machine with Jenkins node
+6. Go to the repository <agent_jenkins_dir> set for Jenkins 
+   ```
+   cd <agent_jenkins_dir>
+   ```
+7. Explore it. Your may found installed tools in the `tools` directory
+8. Your job workspaces is in the `workspaces/pipeline-input-job` directory
+9. After exploring go back to Jenkins on your VM machine and input any name to continue the build.
+
 ## Nektos Act
 ### Install Nektos Act on Ubuntu Jammy
    ```
    sudo apt install act
    ```
   To install Nektos Act on other OS follow the instructions from [section](https://github.com/nektos/act#installation-through-package-managers)
+1. View all jobs that are triggered by pull_request event
+act -l
+2. View all jobs triggered by events, e.g. by `pull_request`
+   ```
+   act pull_request -l
+   ```
+   
+or in the certain workflow file 
+
+   ```
+   act main.yaml -l
+   ```
+3. Run job with a specific name:
+   ```
+   act -j <job_name> 
+   ```
+4. Your may also explicitly indicate the workflow and job to run using flags `--workflow`and `--job`, respectively 
+  ```
+   act --workflows .github/workflows/main.yml --verbose --job my-job
+  ```
+5. Use alternative environment to run your workflows 
+   ```
+   act -P ubuntu-18.04=nektos/act-environments-ubuntu:18.04
+   ```
 
 
 ## References
