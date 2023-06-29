@@ -97,4 +97,4 @@
         password: "{{ jenkins_admin_password }}"
         url: "http://127.0.0.1:{{ jenkins_http_port }}"
         validate_certs: false
-      tags: [ step5, step6, step7 ]
+      tags: [ step7 ]

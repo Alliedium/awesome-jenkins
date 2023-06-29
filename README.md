@@ -57,14 +57,14 @@
    ```
 
 
-## Instructions to install Jenkins with ansible playbook
+## Instructions to install `Jenkins` with ansible-playbook
 
 ### 1. Clone repo:
 
   ```
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   ```
-### 2. Installing `Jenkins` on remote host
+### 2. Install `Jenkins` on remote host
 
 * Copy `$HOME/awesome-jenkins/inventory/example` to `$HOME/awesome-jenkins/inventory/my-jenkins` folder.
   
@@ -84,9 +84,9 @@
    ansible-galaxy install -r $HOME/awesome-jenkins/requirements.yml
    ```
 
-### 4. Run ansible playbook 
+### 4. Run ansible-playbook 
 
-  This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 7 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5` and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, e.g. if you run playbook with `step3` tag, tasks tagged with `always`, `step1`, `step2` and `step3` will be run.
+  This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools, and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 8 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5`, `step6`, and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `always` to `step7`. Use `-t <tag_name>` flag to specify the desired tag. They form a hierarchy of tags from `always` to `step7`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, excepting `step1`, e.g. if you run playbook with `step3` tag, tasks tagged with `always`, `step2` and `step3` will be run.
 
    1. Before running tasks, check the list of tasks that will be executed using `--list-tasks` flag
    
@@ -143,10 +143,15 @@
    ```
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step6
    ```
+   9. `step7` -  Create `Jenkins pipeline input job`, omit `step4`, `step5`, and `step6`. 
+
+      ```
+      ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
+      ```
 
 ### 5. Checkup `Jenkins`
 
-1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open browser and check that `Jenkins` is available at http://localhost:8085/.
+1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open the browser, and check that `Jenkins` is available at http://localhost:8085/.
 2. Login to `Jenkins` using the credentials.
 3. You will see `Jenkins` dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
@@ -277,7 +282,7 @@ After creating new pull request on `Jenkins` scan repository
 ![github_checks](./images/github_checks.png)
 
 ## Project:
-   As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
+   As an example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
 
 ### Job configuration:
    Job configuration is set in the templates/job-config.xml.j2 - pipeline config and templates/multibranch-pipeline-config.xml.j2
@@ -285,8 +290,8 @@ After creating new pull request on `Jenkins` scan repository
 ## GitHub Actions
 
 ### Get familiar with GitHub workflows
-1. Get familiar with GitHub actions functionality by following the examples from  [GitHub Actions examples](https://github.com/orgs/Alliedium-Awesome-GitHub-Actions/repositories)
-2. Fork the repositories to run examples with GitHub actions workflows
+1. Get familiar with GitHub actions functionality by following the examples from [GitHub Actions examples](https://github.com/Alliedium/awesome-github-actions/)
+2. Fork the repository to run examples with GitHub actions workflows
 
 ### Run GitHub Actions
 1. Fork repository on GitHub. 
@@ -403,38 +408,6 @@ After creating new pull request on `Jenkins` scan repository
 8. Your job workspaces is in the `workspaces/pipeline-input-job` directory
 9. After exploring go back to Jenkins on your VM machine and input any name to continue the build.
 
-## Nektos Act
-### Install Nektos Act on Ubuntu Jammy
-   ```
-   sudo apt install act
-   ```
-  To install Nektos Act on other OS follow the instructions from [section](https://github.com/nektos/act#installation-through-package-managers)
-1. View all jobs that are triggered by pull_request event
-act -l
-2. View all jobs triggered by events, e.g. by `pull_request`
-   ```
-   act pull_request -l
-   ```
-   
-or in the certain workflow file 
-
-   ```
-   act main.yaml -l
-   ```
-3. Run job with a specific name:
-   ```
-   act -j <job_name> 
-   ```
-4. Your may also explicitly indicate the workflow and job to run using flags `--workflow`and `--job`, respectively 
-  ```
-   act --workflows .github/workflows/main.yml --verbose --job my-job
-  ```
-5. Use alternative environment to run your workflows 
-   ```
-   act -P ubuntu-18.04=nektos/act-environments-ubuntu:18.04
-   ```
-
-
 ## References
 
 #### Ansible roles used in playbook
@@ -517,8 +490,3 @@ or in the certain workflow file
 #### GitHub Actions
 56. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
 57. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
-
-#### Act
-58. [Act](https://github.com/nektos/act)
-59. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
-60. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
