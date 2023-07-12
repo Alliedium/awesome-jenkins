@@ -1,2 +1,2 @@
 [submodule "springboot-api-rest-example"]
-	branch = test-branch-2
+	branch = origin/test-branch-2
