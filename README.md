@@ -1,48 +1,53 @@
 ## This ansible playbook installs [`Jenkins`](https://www.jenkins.io/doc/) on specified host ##
 
 # Prerequisites
-* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
 
+* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+* Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 * Use `$HOME/awesome-jenkins/inventory/localhost/hosts.yaml` if you are installing the `Jenkins` on the same host where `Ansible` is running.  Use `$HOME/awesome-jenkins/inventory/example/hosts.yaml` if you are installing the `Jenkins` on the remote host.
   
   In our examples, we use `$HOME/awesome-jenkins/inventory/localhost/hosts.yaml` file.
 
-* Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
-
 * [Install `molecule`](https://molecule.readthedocs.io/installation/) on `Ubuntu` Linux. Molecule project is designed to aid in the development and testing of Ansible roles.
   
-   ```
+```shell
    apt update
+```
+```shell
    apt install pip
+```
+```shell
    python3 -m pip install molecule ansible-core
-   pip3 install 'molecule-plugins[docker]'
-   ```
+```
+```shell
+   pip3 install 'molecule-plugins[docker]' 
+```
 
 ## Playbook variables used in Jenkins server installation:
 
 1. The HTTP port for `Jenkins` web interface:
 
-   ```
+   ```yaml
    jenkins_http_port: 8085
    ```
 
 2. Admin account credentials which will be created the first time `Jenkins` is installed:
 
-   ```
+   ```yaml
    jenkins_admin_username: admin
    jenkins_admin_password: admin
    ```
 
 3. Java version:
    
-   ```   
+   ```yaml
    java_packages: 
      - openjdk-17-jdk
    ```
 
 4. Install global tools. Maven versions:
     
-   ```
+   ```yaml
    jenkins_maven_installations:
      - 3.8.4
      - 3.9.0
@@ -52,7 +57,7 @@
 
 6. Multibranch pipeline job's repository url. Please change this parameter to the url of your fork:
 
-   ```
+   ```yaml
    multibranch_repository_url: "https://github.com/Alliedium-demo-test/springboot-api-rest-example.git"
    ```
 
@@ -102,7 +107,6 @@
 
    You will receive a list of tasks, tagged `always`, `step1` and `step2`.
 
-
    2. Run all the available tasks from `playbook.yml` playbook. 
    
    ```
@@ -149,8 +153,7 @@
       ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
       ```
 
-### 5. Checkup `Jenkins`
-
+### 5. Check `Jenkins`
 1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open the browser, and check that `Jenkins` is available at http://localhost:8085/.
 2. Login to `Jenkins` using the credentials.
 3. You will see `Jenkins` dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
@@ -207,7 +210,7 @@ molecule reset
 
 * Finally, to clean up, we can run
 
-```
+```shell
 molecule destroy
 ```
 
@@ -249,7 +252,7 @@ After creating or updating a pull request, tests are launched on the `GitHub` se
 
 ### 6. Convert your generated key
 
-```
+```shell
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
 ```
 
@@ -302,52 +305,60 @@ After creating new pull request on `Jenkins` scan repository
 ## Create Jenkins node on VM
 ### Prerequisite: 
   [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
-  Connect to your VM via ssh and enter password
-   ```
+  Connect to **your VM** via ssh and enter password:
+   ```shell
    ssh <username>@<vm_ip_address>
    ```
 ###   Next steps should be executed on your VM machine
 1. Install git
-   ```
+   ```shell
    sudo dnf install git
    ```
 
 2. Install java 17 and make it default
-   ```
+   ```shell
    sudo dnf install java-17-openjdk java-17-openjdk-devel
+   ```
+   ```shell
    java -version
+   ```
+   ```shell
    alternatives --list
+   ```
+   ```shell
    sudo alternatives --config java
+   ```
+   ```shell
    java -version
    ```
 3. Create directory <agent_jenkins_dir> for Jenkins on your VM. In this directory the Jenkins associated files (settings, jobs) will be stored.
-   ```
+   ```shell
    mkdir <agent_jenkins_dir>
    ```
 
 ### Do on your Jenkins controller machine
 1. Navigate to
-   ```
+   ```shell
     cd /var/lib/jenkins
    ```
 2. Create directory
-   ```
+   ```shell
    mkdir ./ssh
    ```
 3. Change its owner
-   ```
+   ```shell
    sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
    ```
 4. Change user to `jenkins`
-   ```
+   ```shell
    sudo su jenkins
    ```
 5. Create file `known_hosts`
-   ```
+   ```shell
    touch ./.ssh/known_hosts
    ```
-6. Add VM to the `known_hosts`
-   ```
+6. Add `VM` to the `known_hosts`
+   ```shell
    ssh-keyscan host <your_vm_ip> >> /var/lib/jenkins/.ssh/known_hosts
    ```
 7. Go to your Jenkins. Open Manage Jenkins => Nodes 
@@ -388,20 +399,20 @@ After creating new pull request on `Jenkins` scan repository
 
 1. On your host machine go to the directory with `awesome-jenkins` project
 
-   ```
+   ```shell
    cd $HOME/awesome-jenkins
    ```
 
 2. Run `step7` from ansible playbook - Create and launch `Jenkins pipeline input job`.  
 
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
    ```
 3. Open Jenkins in your browser: `127.0.0.1:8085`
 4. Go to the `pipeline-input-job` and run the build. It will stop after some seconds.
 5. Connect to your VM machine with Jenkins node
 6. Go to the repository <agent_jenkins_dir> set for Jenkins 
-   ```
+   ```shell
    cd <agent_jenkins_dir>
    ```
 7. Explore it. Your may found installed tools in the `tools` directory
