@@ -218,89 +218,63 @@ This removes the containers that we deployed and provisioned with create or conv
 
 ### 6. Ansible playbook remote testing with GitHub Actions
 
-The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `GitHub` Actions testing.
+The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `GitHub` Actions testing.     
 
-After creating or updating a pull request, tests are launched on the `GitHub` server and the results can be viewed here
+After creating or updating a pull request, tests are launched on the `GitHub` server and the results can be viewed here       
 
-![github_actions](./images/github_actions.png)
-
-![github_actions_1](./images/github_actions_1.png)
+![github_actions](./images/github_actions.png)         
+ 
+![github_actions_1](./images/github_actions_1.png)       
 
 ## `Jenkins` and `GitHub` integration
 
-### 1. Set Resource Root URL
+We used the following [project](https://github.com/Alliedium/springboot-api-rest-example) as an example      
+Job configuration is set in the `templates/multibranch-pipeline-config.xml.j2`
 
-![resource_root_url](./images/resource_root_url.png)
+1. Set Resource Root URL     
+![resource_root_url](./images/resource_root_url.png)     
+2. Creating your organization in `GitHub`      
+![creating_org_1](./images/creating_org_1.png)
+![creating_org_2](./images/creating_org_2.png)            
 
-### 2. Creating your organization in `GitHub`
-  
-  ![creating_org_1](./images/creating_org_1.png)
+3. Fork your repo for testing purposes on `GitHub`         
+![fork](./images/fork.png)     
 
-  ![creating_org_2](./images/creating_org_2.png)
+4. Creating `GitHub apps`       
 
-### 3. Creating `GitHub apps`
+![github_app](./images/github_app.png)     
 
-![github_app](./images/github_app.png)
+5. Generate and download SSH key     
+![](./images/ssh_key.png)     
+   
+6. Install your app for repositories      
+![install_app](./images/install_app.png)    
 
-### 4. Generate and download SSH key
-
-![](./images/ssh_key.png)
-
-### 5. Install your app for repositories
-
-![install_app](./images/install_app.png)
-
-### 6. Convert your generated key
-
+7. Convert your generated key     
+`<key-in-your-downloads-folder>` - path to your generated SSH key     
+`file-name-private-key.pem` - file with generated SSH key     
+`<key-in-your-downloads-folder>` - path to a converted key      
+`converted-github-app.pem` -  file with a converted key     
 ```shell
-openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
-```
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in <key-in-your-downloads-folder>/file-name-private-key.pem -out <key-in-your-downloads-folder>/converted-github-app.pem -nocrypt
+```       
+8. Create `multibranch pipeline` in `Jenkins`     
 
-`key-in-your-downloads-folder.pem` - your generated SSH key
+![mpipeline](./images/mpipeline.png)     
 
-`converted-github-app.pem` - converted key
+9. Configure `multibranch pipeline`   
+![mp_config](./images/mp_config_3.png)       
 
-### 7. Fork your repo for testing purposes on `GitHub`
+10. On `GitHub` create new branch and pull request     
+After creating new pull request on `Jenkins` scan repository      
 
-  ![fork](./images/fork.png)
+![scan_repository](./images/scan_repository.png)      
 
-### 8. Create `multibranch pipeline` in `Jenkins`
+10. Run your build      
+![run_pr](./images/run_pr.png)     
 
-![mpipeline](./images/mpipeline.png)
-
-![mp_config](./images/mp_config_3.png)
-
-### 9. On `GitHub` create new branch and pull request
-
-After creating new pull request on `Jenkins` scan repository
-
-![scan_repository](./images/scan_repository.png)
-
-### 10. Run your build
-
-![run_pr](./images/run_pr.png)
-
-### 11. See build result on `GitHub`
-
-![github_checks](./images/github_checks.png)
-
-## Project:
-   As an example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
-
-### Job configuration:
-   Job configuration is set in the templates/job-config.xml.j2 - pipeline config and templates/multibranch-pipeline-config.xml.j2
-
-## GitHub Actions
-
-### Get familiar with GitHub workflows
-1. Get familiar with GitHub actions functionality by following the examples from [GitHub Actions examples](https://github.com/Alliedium/awesome-github-actions/)
-2. Fork the repository to run examples with GitHub actions workflows
-
-### Run GitHub Actions
-1. Fork repository on GitHub. 
-2. The pipeline workflow is described in the `ci.yaml` file in `.github/workflows/` repository.
-3. Navigate to Actions and enable them if needed. ![enable_github_actions.png](./images/04gha_enable.png)
-4. The existing workflows can be run manually by following steps marked with the numbers 1-4 from the Figure below or triggered by pull request, see marks 5-7. ![run_existing_gha_wfs.png](./images/05gha_run_existing_workflow.png)-
+11. See build result on `GitHub`     
+![github_checks](./images/github_checks.png)      
 
 ## Create Jenkins node on VM
 ### Prerequisite: 
@@ -314,7 +288,6 @@ After creating new pull request on `Jenkins` scan repository
    ```shell
    sudo dnf install git
    ```
-
 2. Install java 17 and make it default
    ```shell
    sudo dnf install java-17-openjdk java-17-openjdk-devel
