@@ -2,7 +2,7 @@
 
 # Prerequisites
 
-* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+* Run the ansible playbook on `Debian` or `Ubuntu`. [We used VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
 * Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 * Use `$HOME/awesome-jenkins/inventory/localhost/hosts.yaml` if you are installing the `Jenkins` on the same host where `Ansible` is running.  Use `$HOME/awesome-jenkins/inventory/example/hosts.yaml` if you are installing the `Jenkins` on the remote host.
   
@@ -66,14 +66,14 @@
 
 ### 1. Clone repo:
 
-  ```
+  ```shell
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   ```
 ### 2. Install `Jenkins` on remote host
 
 * Copy `$HOME/awesome-jenkins/inventory/example` to `$HOME/awesome-jenkins/inventory/my-jenkins` folder.
   
-  ```
+  ```shell
   cp -r $HOME/awesome-jenkins/inventory/example $HOME/awesome-jenkins/inventory/my-jenkins
   ```
 
@@ -85,23 +85,23 @@
 
 ### 3. Install ansible roles for [Java](https://github.com/geerlingguy/ansible-role-java/), [Git](https://github.com/geerlingguy/ansible-role-git/), and [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) using commands:
    
-   ```
+   ```shell
    ansible-galaxy install -r $HOME/awesome-jenkins/requirements.yml
    ```
 
 ### 4. Run ansible-playbook 
 
-  This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools, and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 8 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5`, `step6`, and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `always` to `step7`. Use `-t <tag_name>` flag to specify the desired tag. They form a hierarchy of tags from `always` to `step7`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, excepting `step1`, e.g. if you run playbook with `step3` tag, tasks tagged with `always`, `step2` and `step3` will be run.
+   This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools, and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 8 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5`, `step6`, and `step7`. Use the `-t <tag_name>` flag to specify the desired tag. They form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, except `step1`, e.g., if you run the playbook with `step3` tag, all tasks with tags `always`, `step2` and `step3` will be run. Tag `step7` does not include all previous steps, it includes only tags `always`, `step2`, and `step3`, because `Input job` needs no plugins or tools. However, run of this tag will not remove any installed tool or plugin.            
 
    1. Before running tasks, check the list of tasks that will be executed using `--list-tasks` flag
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost --list-tasks
    ```
 
    You will receive a list of all tasks. Using `-t step2` when getting a list of tasks.
 
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step2 --list-tasks
    ```
 
@@ -109,47 +109,47 @@
 
    2. Run all the available tasks from `playbook.yml` playbook. 
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost
    ```
    3. Run without installing any plugins in `Jenkins`:
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step1
    ```
 
    4. Run with installing [plugins](ListofJenkinsPluginsToBeInstalled.md) in `Jenkins`:
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step2
    ```
 
    5. Use `step3` tag - install `python-jenkins`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step3
    ```
 
    6. `step4` - Add  `maven` tool
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step4
    ```
 
    7. `step5` - Create and launch  `Jenkins pipeline job`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step5
    ```
    
    8. `step6` - Create and launch `Jenkins multibranch pipeline job`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step6
    ```
-   9. `step7` -  Create `Jenkins pipeline input job`, omit `step4`, `step5`, and `step6`. 
+   9. `step7` -  Create `Jenkins pipeline for input job`. 
 
-      ```
+      ```shell
       ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
       ```
 
@@ -283,7 +283,7 @@ After creating new pull request on `Jenkins` scan repository
    ```shell
    ssh <username>@<vm_ip_address>
    ```
-###   Next steps should be executed on your VM machine
+###   Next steps should be executed on Jenkins node VM
 1. Install git
    ```shell
    sudo dnf install git

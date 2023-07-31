@@ -89,7 +89,7 @@
         validate_certs: false
       retries: 3
       tags: [ step5, step6 ]
-    - name: Create Jenkins pipeline input job
+    - name: Create Jenkins pipeline for input job
       community.general.jenkins_job:
         config: "{{ jenkins_job_input_config }}"
         name: "{{ jenkins_job_input_name }}"
