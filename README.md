@@ -1,48 +1,53 @@
 ## This ansible playbook installs [`Jenkins`](https://www.jenkins.io/doc/) on specified host ##
 
 # Prerequisites
-* Run the ansible playbook on `Debian` or `Ubuntu`. [Used was VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
 
+* Run the ansible playbook on `Debian` or `Ubuntu`. [We used VM with Jammy Ubuntu](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.  
+* Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
 * Use `$HOME/awesome-jenkins/inventory/localhost/hosts.yaml` if you are installing the `Jenkins` on the same host where `Ansible` is running.  Use `$HOME/awesome-jenkins/inventory/example/hosts.yaml` if you are installing the `Jenkins` on the remote host.
   
   In our examples, we use `$HOME/awesome-jenkins/inventory/localhost/hosts.yaml` file.
 
-* Install Ansible: [Follow the second step](https://github.com/Alliedium/awesome-ansible#setting-up-config-machine)
-
 * [Install `molecule`](https://molecule.readthedocs.io/installation/) on `Ubuntu` Linux. Molecule project is designed to aid in the development and testing of Ansible roles.
   
-   ```
+```shell
    apt update
+```
+```shell
    apt install pip
+```
+```shell
    python3 -m pip install molecule ansible-core
-   pip3 install 'molecule-plugins[docker]'
-   ```
+```
+```shell
+   pip3 install 'molecule-plugins[docker]' 
+```
 
 ## Playbook variables used in Jenkins server installation:
 
 1. The HTTP port for `Jenkins` web interface:
 
-   ```
+   ```yaml
    jenkins_http_port: 8085
    ```
 
 2. Admin account credentials which will be created the first time `Jenkins` is installed:
 
-   ```
+   ```yaml
    jenkins_admin_username: admin
    jenkins_admin_password: admin
    ```
 
 3. Java version:
    
-   ```   
+   ```yaml
    java_packages: 
      - openjdk-17-jdk
    ```
 
 4. Install global tools. Maven versions:
     
-   ```
+   ```yaml
    jenkins_maven_installations:
      - 3.8.4
      - 3.9.0
@@ -52,23 +57,23 @@
 
 6. Multibranch pipeline job's repository url. Please change this parameter to the url of your fork:
 
-   ```
+   ```yaml
    multibranch_repository_url: "https://github.com/Alliedium-demo-test/springboot-api-rest-example.git"
    ```
 
 
-## Instructions to install Jenkins with ansible playbook
+## Instructions to install `Jenkins` with ansible-playbook
 
 ### 1. Clone repo:
 
-  ```
+  ```shell
   git clone https://github.com/Alliedium/awesome-jenkins.git $HOME/awesome-jenkins
   ```
-### 2. Installing `Jenkins` on remote host
+### 2. Install `Jenkins` on remote host
 
 * Copy `$HOME/awesome-jenkins/inventory/example` to `$HOME/awesome-jenkins/inventory/my-jenkins` folder.
   
-  ```
+  ```shell
   cp -r $HOME/awesome-jenkins/inventory/example $HOME/awesome-jenkins/inventory/my-jenkins
   ```
 
@@ -80,73 +85,76 @@
 
 ### 3. Install ansible roles for [Java](https://github.com/geerlingguy/ansible-role-java/), [Git](https://github.com/geerlingguy/ansible-role-git/), and [Jenkins](https://github.com/geerlingguy/ansible-role-jenkins) using commands:
    
-   ```
+   ```shell
    ansible-galaxy install -r $HOME/awesome-jenkins/requirements.yml
    ```
 
-### 4. Run ansible playbook 
+### 4. Run ansible-playbook 
 
-  This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 7 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5` and `step6`. Use `-t <tag_name>` flag to specify desired tag. They form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, e.g. if you run playbook with `step3` tag, tasks tagged with `always`, `step1`, `step2` and `step3` will be run.
+   This playbook contains multiple tasks that install `git`, `java`, `Jenkins`, as well as plugins, tools, and pipelines in `Jenkins`. Using `Ansible` tags you can run a part of tasks. In our playbook we use 8 tags: `always`, `step1`, `step2`, `step3`, `step4`, `step5`, `step6`, and `step7`. Use the `-t <tag_name>` flag to specify the desired tag. They form a hierarchy of tags from `always` to `step6`. In this hierarchy, each subsequent tag includes both the tasks marked by this tag as well as tasks relating to all preceding tags, except `step1`, e.g., if you run the playbook with `step3` tag, all tasks with tags `always`, `step2` and `step3` will be run. Tag `step7` does not include all previous steps, it includes only tags `always`, `step2`, and `step3`, because `Input job` needs no plugins or tools. However, run of this tag will not remove any installed tool or plugin.            
 
    1. Before running tasks, check the list of tasks that will be executed using `--list-tasks` flag
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost --list-tasks
    ```
 
    You will receive a list of all tasks. Using `-t step2` when getting a list of tasks.
 
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step2 --list-tasks
    ```
 
    You will receive a list of tasks, tagged `always`, `step1` and `step2`.
 
-
    2. Run all the available tasks from `playbook.yml` playbook. 
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost
    ```
    3. Run without installing any plugins in `Jenkins`:
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step1
    ```
 
    4. Run with installing [plugins](ListofJenkinsPluginsToBeInstalled.md) in `Jenkins`:
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step2
    ```
 
    5. Use `step3` tag - install `python-jenkins`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step3
    ```
 
    6. `step4` - Add  `maven` tool
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step4
    ```
 
    7. `step5` - Create and launch  `Jenkins pipeline job`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step5
    ```
    
    8. `step6` - Create and launch `Jenkins multibranch pipeline job`
    
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step6
    ```
+   9. `step7` -  Create `Jenkins pipeline for input job`. 
 
-### 5. Checkup `Jenkins`
+      ```shell
+      ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
+      ```
 
-1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open browser and check that `Jenkins` is available at http://localhost:8085/.
+### 5. Check `Jenkins`
+1. Go to the host specified in the `$HOME/awesome-jenkins/inventory/localhost/hosts.yml` file, open the browser, and check that `Jenkins` is available at http://localhost:8085/.
 2. Login to `Jenkins` using the credentials.
 3. You will see `Jenkins` dashboard. Open job. ![jenkins_dashboard.png](./images/01jenkins_dashboard.png) 
 4. The main branch will be run for the single pipeline job ![single_pipeline.png](./images/02jenkins_pipeline.png)
@@ -202,7 +210,7 @@ molecule reset
 
 * Finally, to clean up, we can run
 
-```
+```shell
 molecule destroy
 ```
 
@@ -210,139 +218,120 @@ This removes the containers that we deployed and provisioned with create or conv
 
 ### 6. Ansible playbook remote testing with GitHub Actions
 
-The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `GitHub` Actions testing.
+The `$HOME/awesome-jenkins/.github/workflows/ci.yml` file describes the steps for `GitHub` Actions testing.     
 
-After creating or updating a pull request, tests are launched on the `GitHub` server and the results can be viewed here
+After creating or updating a pull request, tests are launched on the `GitHub` server and the results can be viewed here       
 
-![github_actions](./images/github_actions.png)
-
-![github_actions_1](./images/github_actions_1.png)
+![github_actions](./images/github_actions.png)         
+ 
+![github_actions_1](./images/github_actions_1.png)       
 
 ## `Jenkins` and `GitHub` integration
 
-### 1. Set Resource Root URL
+We used the following [project](https://github.com/Alliedium/springboot-api-rest-example) as an example      
+Job configuration is set in the `templates/multibranch-pipeline-config.xml.j2`
 
-![resource_root_url](./images/resource_root_url.png)
+1. Set Resource Root URL     
+![resource_root_url](./images/resource_root_url.png)     
+2. Creating your organization in `GitHub`      
+![creating_org_1](./images/creating_org_1.png)
+![creating_org_2](./images/creating_org_2.png)            
 
-### 2. Creating your organization in `GitHub`
-  
-  ![creating_org_1](./images/creating_org_1.png)
+3. Fork your repo for testing purposes on `GitHub`         
+![fork](./images/fork.png)     
 
-  ![creating_org_2](./images/creating_org_2.png)
+4. Creating `GitHub apps`       
 
-### 3. Creating `GitHub apps`
+![github_app](./images/github_app.png)     
 
-![github_app](./images/github_app.png)
+5. Generate and download SSH key     
+![](./images/ssh_key.png)     
+   
+6. Install your app for repositories      
+![install_app](./images/install_app.png)    
 
-### 4. Generate and download SSH key
+7. Convert your generated key     
+`<key-in-your-downloads-folder>` - path to your generated SSH key     
+`file-name-private-key.pem` - file with generated SSH key     
+`<key-in-your-downloads-folder>` - path to a converted key      
+`converted-github-app.pem` -  file with a converted key     
+```shell
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in <key-in-your-downloads-folder>/file-name-private-key.pem -out <key-in-your-downloads-folder>/converted-github-app.pem -nocrypt
+```       
+8. Create `multibranch pipeline` in `Jenkins`     
 
-![](./images/ssh_key.png)
+![mpipeline](./images/mpipeline.png)     
 
-### 5. Install your app for repositories
+9. Configure `multibranch pipeline`   
+![mp_config](./images/mp_config_3.png)       
 
-![install_app](./images/install_app.png)
+10. On `GitHub` create new branch and pull request     
+After creating new pull request on `Jenkins` scan repository      
 
-### 6. Convert your generated key
+![scan_repository](./images/scan_repository.png)      
 
-```
-openssl pkcs8 -topk8 -inform PEM -outform PEM -in key-in-your-downloads-folder.pem -out converted-github-app.pem -nocrypt
-```
+10. Run your build      
+![run_pr](./images/run_pr.png)     
 
-`key-in-your-downloads-folder.pem` - your generated SSH key
-
-`converted-github-app.pem` - converted key
-
-### 7. Fork your repo for testing purposes on `GitHub`
-
-  ![fork](./images/fork.png)
-
-### 8. Create `multibranch pipeline` in `Jenkins`
-
-![mpipeline](./images/mpipeline.png)
-
-![mp_config](./images/mp_config_3.png)
-
-### 9. On `GitHub` create new branch and pull request
-
-After creating new pull request on `Jenkins` scan repository
-
-![scan_repository](./images/scan_repository.png)
-
-### 10. Run your build
-
-![run_pr](./images/run_pr.png)
-
-### 11. See build result on `GitHub`
-
-![github_checks](./images/github_checks.png)
-
-## Project:
-   As the example we used the following [project](https://github.com/Alliedium/springboot-api-rest-example)
-
-### Job configuration:
-   Job configuration is set in the templates/job-config.xml.j2 - pipeline config and templates/multibranch-pipeline-config.xml.j2
-
-## GitHub Actions
-
-### Get familiar with GitHub workflows
-1. Get familiar with GitHub actions functionality by following the examples from  [GitHub Actions examples](https://github.com/orgs/Alliedium-Awesome-GitHub-Actions/repositories)
-2. Fork the repositories to run examples with GitHub actions workflows
-
-### Run GitHub Actions
-1. Fork repository on GitHub. 
-2. The pipeline workflow is described in the `ci.yaml` file in `.github/workflows/` repository.
-3. Navigate to Actions and enable them if needed. ![enable_github_actions.png](./images/04gha_enable.png)
-4. The existing workflows can be run manually by following steps marked with the numbers 1-4 from the Figure below or triggered by pull request, see marks 5-7. ![run_existing_gha_wfs.png](./images/05gha_run_existing_workflow.png)-
+11. See build result on `GitHub`     
+![github_checks](./images/github_checks.png)      
 
 ## Create Jenkins node on VM
 ### Prerequisite: 
   [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
-  Connect to your VM via ssh and enter password
-   ```
+  Connect to **your VM** via ssh and enter password:
+   ```shell
    ssh <username>@<vm_ip_address>
    ```
-###   Next steps should be executed on your VM machine
+###   Next steps should be executed on Jenkins node VM
 1. Install git
-   ```
+   ```shell
    sudo dnf install git
    ```
-
 2. Install java 17 and make it default
-   ```
+   ```shell
    sudo dnf install java-17-openjdk java-17-openjdk-devel
+   ```
+   ```shell
    java -version
+   ```
+   ```shell
    alternatives --list
+   ```
+   ```shell
    sudo alternatives --config java
+   ```
+   ```shell
    java -version
    ```
 3. Create directory <agent_jenkins_dir> for Jenkins on your VM. In this directory the Jenkins associated files (settings, jobs) will be stored.
-   ```
+   ```shell
    mkdir <agent_jenkins_dir>
    ```
 
 ### Do on your Jenkins controller machine
 1. Navigate to
-   ```
+   ```shell
     cd /var/lib/jenkins
    ```
 2. Create directory
-   ```
+   ```shell
    mkdir ./ssh
    ```
 3. Change its owner
-   ```
+   ```shell
    sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
    ```
 4. Change user to `jenkins`
-   ```
+   ```shell
    sudo su jenkins
    ```
 5. Create file `known_hosts`
-   ```
+   ```shell
    touch ./.ssh/known_hosts
    ```
-6. Add VM to the `known_hosts`
-   ```
+6. Add `VM` to the `known_hosts`
+   ```shell
    ssh-keyscan host <your_vm_ip> >> /var/lib/jenkins/.ssh/known_hosts
    ```
 7. Go to your Jenkins. Open Manage Jenkins => Nodes 
@@ -383,57 +372,25 @@ After creating new pull request on `Jenkins` scan repository
 
 1. On your host machine go to the directory with `awesome-jenkins` project
 
-   ```
+   ```shell
    cd $HOME/awesome-jenkins
    ```
 
 2. Run `step7` from ansible playbook - Create and launch `Jenkins pipeline input job`.  
 
-   ```
+   ```shell
    ansible-playbook $HOME/awesome-jenkins/playbooks/create-job.yml -i $HOME/awesome-jenkins/inventory/localhost -t step7
    ```
 3. Open Jenkins in your browser: `127.0.0.1:8085`
 4. Go to the `pipeline-input-job` and run the build. It will stop after some seconds.
 5. Connect to your VM machine with Jenkins node
 6. Go to the repository <agent_jenkins_dir> set for Jenkins 
-   ```
+   ```shell
    cd <agent_jenkins_dir>
    ```
 7. Explore it. Your may found installed tools in the `tools` directory
 8. Your job workspaces is in the `workspaces/pipeline-input-job` directory
 9. After exploring go back to Jenkins on your VM machine and input any name to continue the build.
-
-## Nektos Act
-### Install Nektos Act on Ubuntu Jammy
-   ```
-   sudo apt install act
-   ```
-  To install Nektos Act on other OS follow the instructions from [section](https://github.com/nektos/act#installation-through-package-managers)
-1. View all jobs that are triggered by pull_request event
-act -l
-2. View all jobs triggered by events, e.g. by `pull_request`
-   ```
-   act pull_request -l
-   ```
-   
-or in the certain workflow file 
-
-   ```
-   act main.yaml -l
-   ```
-3. Run job with a specific name:
-   ```
-   act -j <job_name> 
-   ```
-4. Your may also explicitly indicate the workflow and job to run using flags `--workflow`and `--job`, respectively 
-  ```
-   act --workflows .github/workflows/main.yml --verbose --job my-job
-  ```
-5. Use alternative environment to run your workflows 
-   ```
-   act -P ubuntu-18.04=nektos/act-environments-ubuntu:18.04
-   ```
-
 
 ## References
 
@@ -517,8 +474,3 @@ or in the certain workflow file
 #### GitHub Actions
 56. [GitHub Actions workflows](https://docs.github.com/en/actions/using-workflows/about-workflows)
 57. [GitHub Actions workflows basics, examples and a quick tutorial](https://codefresh.io/learn/github-actions/github-actions-workflows-basics-examples-and-a-quick-tutorial/)
-
-#### Act
-58. [Act](https://github.com/nektos/act)
-59. [GitHub Actions on your local machine](https://dev.to/ken_mwaura1/run-github-actions-on-your-local-machine-bdm)
-60. [Debug GitHub Actions locally with act](https://everyday.codes/tutorials/debug-github-actions-locally-with-act/)
