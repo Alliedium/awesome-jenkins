@@ -276,6 +276,25 @@ After creating new pull request on `Jenkins` scan repository
 11. See build result on `GitHub`     
 ![github_checks](./images/github_checks.png)      
 
+## Manage users in Jenkins
+### Prerequisites 
+`Matrix Authorization Strategy` Jenkins plugin is installed      
+1. Create new user: Go to `Manage Jenkins` -> `Users`
+![matrix_01.png](./images/matrix_01.png)       
+![matrix_02.png](./images/matrix_02.png)      
+![matrix_03.png](./images/matrix_03.png)     
+![matrix_04.png](./images/matrix_04.png)      
+3. Go to Manage Jenkins -> Security. Select from the `Security Realm` drop-down `Jenkins' own user database`, while `Authorization`: `Project-based Matrix Authorization security`. Then add existing users to the table and check desired access options. Save changes.      
+![matrix_05.png](./images/matrix_05.png)      
+4. Go to the `Dashboard` and open configuration of an existing pipeline       
+![matrix_06.png](./images/matrix_06.png)    
+10. Check `Enable project-based security` 
+![matrix_07.png](./images/matrix_07.png)      
+12. Go to the `Dashboard` and open configuration of an existing `node`    
+![matrix_08.png](./images/matrix_08.png)      
+13. Check `Enable node-based security`    
+![matrix_09.png](./images/matrix_09.png)       
+
 ## Create Jenkins node on VM
 ### Prerequisite: 
   [Use VM with Rocky9.2](https://github.com/Alliedium/awesome-proxmox). Use the [script](https://github.com/Alliedium/awesome-proxmox/blob/main/vm-cloud-init-shell/.env.example) to create VM on `Proxmox`.
@@ -322,7 +341,7 @@ After creating new pull request on `Jenkins` scan repository
    ```shell
    sudo chown -R jenkins:jenkins /var/lib/jenkins/.ssh
    ```
-4. Change user to `jenkins`
+4. Change user to `jenkins` directory
    ```shell
    sudo su jenkins
    ```

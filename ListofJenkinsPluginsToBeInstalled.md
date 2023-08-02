@@ -1,17 +1,20 @@
 List of plugins that will be installed:
 - build-timeout
+- build-token-root
 - branch-api
 - credentials
 - checks-api
 - echarts-api
+- disable-github-multibranch-status
 - git
 - git-client
 - github
 - github-api
 - github-client
-- github-branch-source
+- github-checks
 - htmlpublisher
 - junit
+- matrix-auth
 - maven-plugin
 - pipeline
 - pipeline-groovy
@@ -20,6 +23,9 @@ List of plugins that will be installed:
 - pipeline-stage-step
 - pipeline-stage-view
 - scm-api
+- ssh-credentials
+- ssh-slaves
+- sshd
 - warnings-ng
 - workflow-api
 - workspace-cleanup
